@@ -13,38 +13,37 @@ export default class EventPresenter {
   #eventComponent = null;
   #formEditComponent = null;
 
-  #eventsModel = null;
-
   #event = null;
+  #dataOffers = null;
+  #dataDestinations = null;
   #mode = Mode.DEFAULT;
 
-  constructor({eventListContainer, eventsModel, onDataChange, onModeChange}) {
+  constructor({eventListContainer, onDataChange, onModeChange}) {
     this.#eventListContainer = eventListContainer;
-    this.#eventsModel = eventsModel;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
   }
 
-  init(event) {
+  init(event, dataOffers, dataDestinations) {
     this.#event = event;
+    this.#dataOffers = dataOffers;
+    this.#dataDestinations = dataDestinations;
 
     const prevEventComponent = this.#eventComponent;
     const prevFormEditComponent = this.#formEditComponent;
 
     this.#eventComponent = new EventItemView({
       event: this.#event,
-      checkedOffers: [...this.#eventsModel.getOfferById(event.type, event.offers)],
-      destination: this.#eventsModel.getDestinationById(event.destination),
+      dataOffers: this.#dataOffers,
+      dataDestinations: this.#dataDestinations,
       onEditClick: this.#handleEditClick,
       onFavoriteClick: this.#handleFavoriteClick,
     });
 
     this.#formEditComponent = new FormEditView({
       event: this.#event,
-      checkedOffers: [...this.#eventsModel.getOfferById(event.type, event.offers)],
-      offers: this.#eventsModel.getOffersByType(event.type),
-      destinations: this.#eventsModel.getDestinations(),
-      destination: this.#eventsModel.getDestinationById(event.destination),
+      dataOffers: this.#dataOffers,
+      dataDestinations: this.#dataDestinations,
       onFormEditClick: this.#handleFormEditClick,
       onFormSubmit: this.#handleFormSubmit,
     });
@@ -100,14 +99,6 @@ export default class EventPresenter {
     }
   };
 
-  // #enterKeyDownHandler = (evt) => {
-  //   if (isEnterKey(evt)) {
-  //     evt.preventDefault();
-  //     this.#formEditComponent.reset(this.#event);
-  //     this.#handleDataChange(this.#event);
-  //   }
-  // };
-
   #handleFavoriteClick = () => {
     this.#handleDataChange({...this.#event, isFavorite: !this.#event.isFavorite});
   };
@@ -124,7 +115,8 @@ export default class EventPresenter {
 
   #handleFormSubmit = (event) => {
     this.#handleDataChange(event);
-    // this.#formEditComponent.reset(this.#event);
+    // this.#formEditComponent.reset(event);
+    // this.#eventComponent.reset(event);
     // console.log(3, this.#formEditComponent);
     this.#replaceFormToEvent();
   };

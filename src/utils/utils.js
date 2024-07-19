@@ -98,6 +98,17 @@ function updateItem (items, update) {
   return items.map((item) => item.id === update.id ? update : item);
 }
 
+const getPointTypeOffer = (dataOffers, point) => dataOffers.find((offer)=> offer.type === point.type);
+
+const getOfferById = (dataOffers, point) => {
+  const offerByType = getPointTypeOffer(dataOffers, point);
+  return offerByType.offers.filter((item) => point.offers.find((id) => item.id === id));
+};
+
+const getDestinationById = (dataDestinations, point) => dataDestinations.find((item)=>item.id === point.destination);
+
+const getDestinationByTargetName = (dataDestinations, targetName) => dataDestinations.find((item)=>item.name === targetName);
+
 /**
  * Function to getTotalEventPrice
  * Parametrs: event.basePrice, offers.price
@@ -111,4 +122,4 @@ function updateItem (items, update) {
 //   return totalPrice;
 // }
 
-export { getRandomArrayElement, getRandomInteger, getArrayFromRandomElements, dateFormat, humanizeDate, getDurationInTime, capitalizeWords, isEscapeKey, isEnterKey, updateItem };
+export { getRandomArrayElement, getRandomInteger, getArrayFromRandomElements, dateFormat, humanizeDate, getDurationInTime, capitalizeWords, isEscapeKey, getPointTypeOffer, getOfferById, getDestinationByTargetName, getDestinationById, updateItem };

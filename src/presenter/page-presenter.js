@@ -20,6 +20,8 @@ export default class PagePresenter {
   #sortedEvents = [];
   #pageEvents = [];
   #sortTypes = [];
+  #offers = [];
+  #destinations = [];
 
   #eventPresenters = new Map();
 
@@ -30,10 +32,9 @@ export default class PagePresenter {
   }
 
   init() {
+    this.#offers = [...this.#eventsModel.offers];
+    this.#destinations = [...this.#eventsModel.destinations];
     this.#pageEvents = [...this.#eventsModel.events];
-    // 1. В отличии от сортировки по любому параметру,
-    // исходный порядок можно сохранить только одним способом -
-    // сохранив исходный массив:
     this.#sortedEvents = [...this.#eventsModel.events];
     this.#renderEvents();
   }
@@ -48,14 +49,11 @@ export default class PagePresenter {
     this.#sortedEvents = updateItem(this.#sortedEvents, updatedEvent);
     this.#eventPresenters.get(updatedEvent.id).init(updatedEvent);
     this.#sortEvents(this.#currentSortType);
-    // - Очищаем список
     this.#clearEvents();
-    // - Рендерим список заново
     this.#pageEvents.forEach((i) => this.#renderEvent(i));
   };
 
   #handleSortTypeChange = (sortType) => {
-    // - Сортируем задачи
     if (this.#currentSortType === sortType) {
       return;
     }
@@ -73,9 +71,6 @@ export default class PagePresenter {
   };
 
   #sortEvents(sortType) {
-    // 2. Этот исходный массив задач необходим,
-    // потому что для сортировки мы будем мутировать
-    // массив в свойстве pageEvents
     switch (sortType) {
       case SortType.TIME:
         this.#pageEvents.sort(sortByTime);
@@ -84,8 +79,6 @@ export default class PagePresenter {
         this.#pageEvents.sort(sortByPrice);
         break;
       default:
-      // 3. А когда пользователь захочет "вернуть всё, как было",
-      // мы просто запишем в pageEvents исходный массив
         this.#pageEvents = [...this.#sortedEvents];
         this.#pageEvents.sort(sortByDay);
         this.#currentSortType = SortType.DEFAULT;
@@ -102,14 +95,14 @@ export default class PagePresenter {
     render(this.#sortComponent, this.#pageContainer, RenderPosition.AFTERBEGIN);
   }
 
-  #renderEvent(event) {
+  #renderEvent(event, dataOffers, dataDestinations) {
     const eventPresenter = new EventPresenter({
       eventListContainer: this.#tripListComponent.element,
       eventsModel: this.#eventsModel,
       onDataChange: this.#handleEventChange,
       onModeChange: this.#handleModeChange
     });
-    eventPresenter.init(event);
+    eventPresenter.init(event, dataOffers, dataDestinations);
     this.#eventPresenters.set(event.id, eventPresenter);
   }
 
@@ -140,6 +133,6 @@ export default class PagePresenter {
     this.#renderTripList();
 
     this.#pageEvents.sort(sortByDay);
-    this.#pageEvents.forEach((i) => this.#renderEvent(i));
+    this.#pageEvents.forEach((i) => this.#renderEvent(i, this.#offers, this.#destinations));
   }
 }
