@@ -43,14 +43,14 @@ export default class PagePresenter {
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #handleEventChange = (updatedEvent, sortType) => {
+  #handleEventChange = (updatedEvent) => {
     console.log('updatedEvent', updatedEvent);
     this.#pageEvents = updateItem(this.#pageEvents, updatedEvent);
     this.#sortedEvents = updateItem(this.#sortedEvents, updatedEvent);
-    this.#eventPresenters.get(updatedEvent.id).init(updatedEvent);
+    this.#eventPresenters.get(updatedEvent.id).init(updatedEvent, this.#offers, this.#destinations);
     this.#sortEvents(this.#currentSortType);
     this.#clearEvents();
-    this.#pageEvents.forEach((i) => this.#renderEvent(i));
+    this.#pageEvents.forEach((i) => this.#renderEvent(i, this.#offers, this.#destinations));
   };
 
   #handleSortTypeChange = (sortType) => {
@@ -67,7 +67,7 @@ export default class PagePresenter {
     // - Очищаем список
     this.#clearEvents();
     // - Рендерим список заново
-    this.#pageEvents.forEach((i) => this.#renderEvent(i));
+    this.#pageEvents.forEach((i) => this.#renderEvent(i, this.#offers, this.#destinations));
   };
 
   #sortEvents(sortType) {

@@ -13,13 +13,9 @@ function createOfferTemplate({title, price}) {
 
 function createEventItemTemplate(event, dataOffers, dataDestinations) {
   const { type, dateFrom, dateTo, isFavorite, basePrice } = event;
-  console.log(event, dataOffers, dataDestinations);
   const destination = getDestinationById(dataDestinations, event);
-  console.log(destination);
   const eventOffers = getOfferById(dataOffers, event);
-  // console.log(eventOffers);
-  // const checkedOffers =
-  // const { name } = destination;
+  const { name } = destination;
 
   const favouriteClassName = isFavorite
     ? 'event__favorite-btn--active'
@@ -32,7 +28,7 @@ function createEventItemTemplate(event, dataOffers, dataDestinations) {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${capitalizeWords(type)} ${destination.name}</h3>
+        <h3 class="event__title">${capitalizeWords(type)} ${name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${dateFrom}">${humanizeDate(dateFrom, dateFormat.HOURS)}</time>
