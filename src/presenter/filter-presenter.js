@@ -1,6 +1,5 @@
 import { render, replace, remove } from '../framework/render.js';
 import EventFilterView from '../view/filter-view.js';
-import { filterEvents } from '../utils/filter.js';
 import { FilterType, UpdateType } from '../const.js';
 
 export default class FilterPresenter {
@@ -20,8 +19,6 @@ export default class FilterPresenter {
   }
 
   get filters() {
-    const events = this.#eventsModel.events;
-
     return Object.values(FilterType).map((type) => ({
       type,
     }));

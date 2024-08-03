@@ -79,7 +79,7 @@ const UpdateType = {
 const FormResetButton = {
   DELETE: 'Delete',
   CANCEL: 'Cancel'
-}
+};
 
 const BLANK_POINT = {
   basePrice: 0,

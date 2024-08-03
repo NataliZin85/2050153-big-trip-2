@@ -2,7 +2,7 @@ import EventItemView from '../view/event-view.js';
 import FormEditView from '../view/form-edit-view.js';
 import { render, replace, remove } from '../framework/render.js';
 import { isEscapeKey } from '../utils/utils.js';
-import { isEventInPresent, isEventInPast, isEventInFuture } from '../utils/filter.js'
+import { isEventInPresent, isEventInPast, isEventInFuture } from '../utils/filter.js';
 import { Mode, UserAction, UpdateType, FormResetButton } from '../const.js';
 
 export default class EventPresenter {

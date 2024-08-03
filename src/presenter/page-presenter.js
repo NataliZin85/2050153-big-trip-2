@@ -3,7 +3,7 @@ import EventListView from '../view/list-view.js';
 import NoEventsView from '../view/no-events-view.js';
 import HeaderPresenter from './header-presenter.js';
 import EventPresenter from './event-presenter.js';
-import NewEventFormPresenter from './add-event-form-presenter.js'
+import NewEventFormPresenter from './add-event-form-presenter.js';
 import { render, remove, RenderPosition } from '../framework/render.js';
 import { SortTypes, UpdateType, UserAction, FilterType } from '../const.js';
 import { sortByDay, sortByTime, sortByPrice } from '../utils/sort.js';
@@ -100,17 +100,16 @@ export default class PagePresenter {
     }
   };
 
-   /**
-   * #handleModelEvent будет обновлять точки маршрута или всю страницу
-   * в зависимости от типа изменений:
-   * updateType - тип изменений:
-   * - PATCH - обновит часть или всю event(точку маршрута),
-   * - MINOR - обновит events (точки маршрута),
-   * - MAJOR - обновить всю страницу (например, при переключении фильтра.
-   * data - обновленные данные
-   */
+  /**
+  * #handleModelEvent будет обновлять точки маршрута или всю страницу
+  * в зависимости от типа изменений:
+  * updateType - тип изменений:
+  * - PATCH - обновит часть или всю event(точку маршрута),
+  * - MINOR - обновит events (точки маршрута),
+  * - MAJOR - обновить всю страницу (например, при переключении фильтра.
+  * data - обновленные данные
+  */
   #handleModelEvent = (updateType, data) => {
-    console.log(updateType, data);
     switch (updateType) {
       case UpdateType.PATCH:
         this.#eventPresenters.get(data.id).init(data, this.#offers, this.#destinations);
@@ -194,7 +193,6 @@ export default class PagePresenter {
 
   #clearHeader() {
     this.#headerPresenter.destroy();
-    // this.#headerPresenter.clear();
   }
 
   #clearTripList({ resetSortType = false } = {}) {

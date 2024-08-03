@@ -1,5 +1,4 @@
 import PagePresenter from './presenter/page-presenter.js';
-import HeaderPresenter from './presenter/header-presenter.js';
 import EventsModel from './model/event-model.js';
 import FilterModel from './model/filter-model.js';
 
@@ -13,12 +12,6 @@ const filterModel = new FilterModel();
 
 newEventButton.addEventListener('click', handleNewEventButtonClick);
 
-// const headerPresenter = new HeaderPresenter({
-//   headerContainer: headerElement,
-//   filterModel,
-//   eventsModel,
-// });
-
 const pagePresenter = new PagePresenter({
   pageContainer: pageMainSortElement,
   headerContainer: headerElement,
@@ -27,17 +20,13 @@ const pagePresenter = new PagePresenter({
   onNewEventDestroy: handleNewEventFormClose
 });
 
-function handleNewEventFormClose(evt) {
-  // evt.preventDefault();
+function handleNewEventFormClose() {
   newEventButton.disabled = false;
 }
 
-function handleNewEventButtonClick(evt) {
-  // evt.preventDefault();
-
+function handleNewEventButtonClick() {
   pagePresenter.createEvent();
   newEventButton.disabled = true;
 }
 
-// headerPresenter.init();
 pagePresenter.init();
