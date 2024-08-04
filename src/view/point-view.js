@@ -11,10 +11,10 @@ function createOfferTemplate({title, price}) {
   );
 }
 
-function createEventItemTemplate(event, dataOffers, dataDestinations) {
-  const { type, dateFrom, dateTo, isFavorite, basePrice } = event;
-  const destination = getDestinationById(dataDestinations, event);
-  const eventOffers = getOfferById(dataOffers, event);
+function createPointItemTemplate(point, dataOffers, dataDestinations) {
+  const { type, dateFrom, dateTo, isFavorite, basePrice } = point;
+  const destination = getDestinationById(dataDestinations, point);
+  const pointOffers = getOfferById(dataOffers, point);
   const { name } = destination;
 
   const favouriteClassName = isFavorite
@@ -42,7 +42,7 @@ function createEventItemTemplate(event, dataOffers, dataDestinations) {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${eventOffers.map((offer) => createOfferTemplate(offer)).join('')}
+          ${pointOffers.map((offer) => createOfferTemplate(offer)).join('')}
         </ul>
         <button class="event__favorite-btn ${favouriteClassName}" type="button">
           <span class="visually-hidden">Add to favorite</span>
@@ -58,17 +58,17 @@ function createEventItemTemplate(event, dataOffers, dataDestinations) {
   );
 }
 
-export default class EventItemView extends AbstractView {
-  #event = null;
+export default class PointItemView extends AbstractView {
+  #point = null;
   #dataOffers = null;
   #dataDestinations = null;
 
   #handleEditClick = null;
   #handleFavoriteClick = null;
 
-  constructor({event, dataOffers, dataDestinations, onEditClick, onFavoriteClick}) {
+  constructor({point, dataOffers, dataDestinations, onEditClick, onFavoriteClick}) {
     super();
-    this.#event = event;
+    this.#point = point;
     this.#dataOffers = dataOffers;
     this.#dataDestinations = dataDestinations;
 
@@ -82,7 +82,7 @@ export default class EventItemView extends AbstractView {
   }
 
   get template() {
-    return createEventItemTemplate(this.#event, this.#dataOffers, this.#dataDestinations);
+    return createPointItemTemplate(this.#point, this.#dataOffers, this.#dataDestinations);
   }
 
   #editClickHandler = (evt) => {

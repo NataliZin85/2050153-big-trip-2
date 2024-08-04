@@ -1,13 +1,19 @@
 import PagePresenter from './presenter/page-presenter.js';
-import EventsModel from './model/event-model.js';
+import PointsModel from './model/points-model.js';
 import FilterModel from './model/filter-model.js';
+import PointsApiService from './points-api-service.js';
 
 const headerElement = document.querySelector('.page-header__container');
 const pageMainElement = document.querySelector('.page-main');
 const pageMainSortElement = pageMainElement.querySelector('.trip-events');
 const newEventButton = document.querySelector('.trip-main__event-add-btn');
 
-const eventsModel = new EventsModel();
+const AUTHORIZATION = `Basic TmF0YWxpYTpOYXRhbGlh`;
+const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
+
+const pointsModel = new PointsModel({
+  pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION)
+});
 const filterModel = new FilterModel();
 
 newEventButton.addEventListener('click', handleNewEventButtonClick);
@@ -15,7 +21,7 @@ newEventButton.addEventListener('click', handleNewEventButtonClick);
 const pagePresenter = new PagePresenter({
   pageContainer: pageMainSortElement,
   headerContainer: headerElement,
-  eventsModel,
+  pointsModel,
   filterModel,
   onNewEventDestroy: handleNewEventFormClose
 });

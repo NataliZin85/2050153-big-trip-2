@@ -21,7 +21,7 @@ const dateFormat = {
 };
 
 // Приобразование данных по дате в нужный формат
-const humanizeDate = (eventDate, format) => eventDate ? dayjs.utc(eventDate).format(format) : '';
+const humanizeDate = (pointDate, format) => pointDate ? dayjs.utc(pointDate).format(format) : '';
 
 // Приобразование формата отображения текста с первой заглавной буквой.
 // Пример: "Название Города"
@@ -76,20 +76,20 @@ const getLongDuration = (start, end) => {
 function getDurationInTime(start, end) {
   const difference = (dayjs(end).diff(dayjs(start)));
   const differenceInHours = dayjs(end).diff(dayjs(start), 'hour');
-  let eventDuration;
+  let pointDuration;
 
   if (differenceInHours < ONE_HOUR) {
-    eventDuration = dayjs(difference).format('mm[M]');;
+    pointDuration = dayjs(difference).format('mm[M]');;
   } else if (differenceInHours > ONE_HOUR && differenceInHours < HOURS_IN_DAY) {
-    eventDuration = dayjs(difference).format('HH[H] mm[M]');
+    pointDuration = dayjs(difference).format('HH[H] mm[M]');
   } else if (differenceInHours >= HOURS_IN_DAY) {
     if(dayjs(end).diff(dayjs(start), 'day') > DAYS_IN_MONTH) {
-      eventDuration = getLongDuration(start, end);
+      pointDuration = getLongDuration(start, end);
     } else {
-      eventDuration = dayjs(difference).format('DD[D] HH[H] mm[M]');
+      pointDuration = dayjs(difference).format('DD[D] HH[H] mm[M]');
     }
   }
-  return eventDuration;
+  return pointDuration;
 }
 
 /**
@@ -129,29 +129,29 @@ const getDestinationByTargetName = (dataDestinations, targetName) => dataDestina
 
 /**
  * Function to getTotalPrice - получение значения конечной цены точеки назначения плюс дополнительные расстраты
- * Parametrs: event offers
+ * Parametrs: point offers
  */
-const getTotalEventPrice = (event, offers) => {
-  const eventOffers = getOfferById(offers, event);
+const getTotalEventPrice = (point, offers) => {
+  const pointOffers = getOfferById(offers, point);
   let totalOfferesPrice = 0;
 
-  eventOffers.forEach((offer) => {
+  pointOffers.forEach((offer) => {
       totalOfferesPrice += offer.price;
   });
 
-  const totalEventPrice = Number(event.basePrice) + totalOfferesPrice;
+  const totalEventPrice = Number(point.basePrice) + totalOfferesPrice;
   return totalEventPrice;
 };
 
 /**
  * Function to getTotalPrice - получение значения конечной цены точеки назначения плюс дополнительные расстраты
- * Parametrs: events offers
+ * Parametrs: points offers
  */
-const getTotalPrice = (events, offers) => {
+const getTotalPrice = (points, offers) => {
   let totalPrice = 0;
 
-  events.forEach((event) => {
-    const totalEventPrice = getTotalEventPrice(event, offers);
+  points.forEach((point) => {
+    const totalEventPrice = getTotalEventPrice(point, offers);
     totalPrice += totalEventPrice;
   });
   return totalPrice;

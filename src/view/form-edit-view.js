@@ -1,11 +1,11 @@
-import EventFormView from '../view/event-form-view.js';
+import PointFormView from '../view/point-form-view.js';
 
-export default class FormEditView extends EventFormView {
-  constructor({event, dataOffers, dataDestinations, resetButton, isNewForm, onFormEditClick, onFormSubmit, onResetClick}) {
-    super({event, dataOffers, dataDestinations, resetButton, isNewForm, onFormEditClick, onFormSubmit, onResetClick });
+export default class FormEditView extends PointFormView {
+  constructor({point, dataOffers, dataDestinations, resetButton, isNewForm, onFormEditClick, onFormSubmit, onResetClick}) {
+    super({point, dataOffers, dataDestinations, resetButton, isNewForm, onFormEditClick, onFormSubmit, onResetClick });
 
-    this._setState(FormEditView.parseEventToState({event}));
+    this._setState(FormEditView.parsePointToState({point}));
   }
 
-  reset = (event) => this.updateElement(FormEditView.parseEventToState(event));
+  reset = (point) => this.updateElement(FormEditView.parsePointToState(point));
 }

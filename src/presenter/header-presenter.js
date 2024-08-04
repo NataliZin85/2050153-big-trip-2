@@ -9,25 +9,25 @@ export default class HeaderPresenter {
   #tripInfoContainer = null;
   #filterContainer = null;
 
-  #eventsModel = null;
+  #pointsModel = null;
   #filterModel = null;
 
   #filterPresenter = null;
 
   #dataOffers = [];
-  #events = [];
+  #points = [];
 
-  constructor({headerContainer, eventsModel, filterModel}) {
+  constructor({headerContainer, pointsModel, filterModel}) {
     this.#headerContainer = headerContainer;
     this.#tripInfoContainer = this.#headerContainer.querySelector('.trip-main');
     this.#filterContainer = this.#headerContainer.querySelector('.trip-controls__filters');
-    this.#eventsModel = eventsModel;
+    this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
   }
 
   init() {
-    this.#events = this.#eventsModel.events;
-    this.#dataOffers = this.#eventsModel.offers;
+    this.#points = this.#pointsModel.points;
+    this.#dataOffers = this.#pointsModel.offers;
 
     this.#renderTripInfo();
     this.#renderFilters();
@@ -46,7 +46,7 @@ export default class HeaderPresenter {
 
   #renderTripInfo() {
     this.#tripInfoComponent = new TripInfoView({
-      events: this.#events,
+      points: this.#points,
       dataOffers: this.#dataOffers,
     });
     render(this.#tripInfoComponent, this.#tripInfoContainer, RenderPosition.AFTERBEGIN);
@@ -55,7 +55,7 @@ export default class HeaderPresenter {
   #renderFilters() {
     this.#filterPresenter = new FilterPresenter({
       filterContainer: this.#filterContainer,
-      eventsModel: this.#eventsModel,
+      pointsModel: this.#pointsModel,
       filterModel: this.#filterModel,
     });
     this.#filterPresenter.init();

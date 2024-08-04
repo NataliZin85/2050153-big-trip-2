@@ -35,7 +35,7 @@ const TYPES = [
   'restaurant'
 ];
 
-const EVENT_COUNT = 3;
+const POINT_COUNT = 3;
 
 const FilterType = {
   EVERYTHING: 'everything',
@@ -65,9 +65,9 @@ const SortTypes = {
 };
 
 const UserAction = {
-  UPDATE_EVENT: 'UPDATE_EVENT',
-  ADD_EVENT: 'ADD_EVENT',
-  DELETE_EVENT: 'DELETE_EVENT',
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
 };
 
 const UpdateType = {
@@ -91,4 +91,4 @@ const BLANK_POINT = {
   type: 'flight'
 };
 
-export { DESTINATIONS, DESCRIPTIONS, TYPES, EVENT_COUNT, TextNoEvent, Mode, SortTypes, FilterType, UserAction, UpdateType, FormResetButton, BLANK_POINT };
+export { DESTINATIONS, DESCRIPTIONS, TYPES, POINT_COUNT, TextNoEvent, Mode, SortTypes, FilterType, UserAction, UpdateType, FormResetButton, BLANK_POINT };

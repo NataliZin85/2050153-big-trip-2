@@ -10,7 +10,7 @@ export default class NewEventFormPresenter {
   #handleModeChange = null;
   #handleDestroy = null;
 
-  #event = null;
+  #point = null;
   #dataOffers = null;
   #dataDestinations = null;
 
@@ -34,7 +34,7 @@ export default class NewEventFormPresenter {
       resetButton: FormResetButton.CANCEL,
       isNewForm: true,
       onFormEditClick: this._handleFormEditClick,
-      onFormSubmit: this._handleEventFormSubmit,
+      onFormSubmit: this._handlePointFormSubmit,
       onResetClick: this._handleResetClick,
     });
 
@@ -56,13 +56,13 @@ export default class NewEventFormPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
-  _handleEventFormSubmit = (event) => {
+  _handlePointFormSubmit = (point) => {
     this.#handleDataChange(
-      UserAction.ADD_EVENT,
+      UserAction.ADD_POINT,
       UpdateType.MINOR,
       // Пока у нас нет сервера, который бы после сохранения
       // выдывал честный id задачи, нам нужно позаботиться об этом самим
-      {id: nanoid(), ...event},
+      {id: nanoid(), ...point},
     );
     this.destroy();
   };
