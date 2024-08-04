@@ -1,26 +1,59 @@
 import Observable from '../framework/observable.js';
-import { getRandomEvent } from '../mock/event-points.js';
-import { mockDestinations } from '../mock/destinations.js';
-import { mockOffers } from '../mock/offers.js';
-import { POINT_COUNT } from '../const.js';
+// import { getRandomEvent } from '../mock/event-points.js';
+// import { mockDestinations } from '../mock/destinations.js';
+// import { mockOffers } from '../mock/offers.js';
+import { POINT_COUNT, UpdateType } from '../const.js';
 
 export default class PointsModel extends Observable {
   #pointsApiService = null;
-  #points = Array.from({length: POINT_COUNT},() => getRandomEvent());
-  #dataOffers = mockOffers;
-  #dataDestinations = mockDestinations;
+  #points = [];
+  #dataOffers = [];
+  #dataDestinations = [];
 
   constructor({pointsApiService}) {
     super();
     this.#pointsApiService = pointsApiService;
 
-    this.#pointsApiService.points.then((points) => {
-      console.log(points.map(this.#adaptToClient));
-    });
+    // this.#pointsApiService.points.then((points) => {
+    //   console.log(points.map(this.#adaptToClient));
+    // });
+    // this.#pointsApiService.offers.then((dataOffers) => {
+    //   console.log(dataOffers);
+    // });
+    // this.#pointsApiService.destinations.then((dataDestinations) => {
+    //   console.log(dataDestinations);
+    // });
   }
 
   get points() {
     return this.#points;
+  }
+
+  get offers() {
+    return this.#dataOffers;
+  }
+
+  get destinations() {
+    return this.#dataDestinations;
+  }
+
+  async init() {
+    try {
+      const points = await this.#pointsApiService.points;
+      this.#points = points.map(this.#adaptToClient);
+      console.log(this.#points);
+      const offers = await this.#pointsApiService.offers;
+      this.#dataOffers = offers.map(this.#adaptToClient);
+      console.log(this.#dataOffers);
+      const destinations = await this.#pointsApiService.destinations;
+      this.#dataDestinations = destinations.map(this.#adaptToClient);
+      console.log(this.#dataDestinations);
+    } catch(err) {
+      this.#points = [];
+      this.#dataOffers = [];
+      this.#dataDestinations = [];
+    }
+    this._notify(UpdateType.INIT);
   }
 
   updatePoint(updateType, update) {
@@ -61,14 +94,6 @@ export default class PointsModel extends Observable {
     ];
 
     this._notify(updateType);
-  }
-
-  get offers() {
-    return this.#dataOffers;
-  }
-
-  get destinations() {
-    return this.#dataDestinations;
   }
 
   #adaptToClient(point) {

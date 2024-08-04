@@ -2,7 +2,6 @@ import AbstractView from '../framework/view/abstract-view.js';
 import { TextNoEvent } from '../const.js';
 
 function createNoEventsTemplate(filterType) {
-  console.log(filterType);
   return `<p class="trip-events__msg">${ TextNoEvent[filterType] }</p>`;
 }
 

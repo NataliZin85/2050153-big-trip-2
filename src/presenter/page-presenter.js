@@ -22,8 +22,8 @@ export default class PagePresenter {
   #currentSortType = SortTypes.DEFAULT;
   #currentFilterType = FilterType.EVERYTHING;
 
-  #offers = [];
-  #destinations = [];
+  // #offers = [];
+  // #destinations = [];
 
   #newEventFormPresenter = null;
   #pointPresenters = new Map();
@@ -48,6 +48,7 @@ export default class PagePresenter {
   get points() {
     this.#currentFilterType = this.#filterModel.filter;
     const points = this.#pointsModel.points;
+    console.log(points);
     const filteredPoints = filterEvents[this.#currentFilterType](points);
 
     switch (this.#currentSortType) {
@@ -60,8 +61,8 @@ export default class PagePresenter {
   }
 
   init() {
-    this.#offers = [...this.#pointsModel.offers];
-    this.#destinations = [...this.#pointsModel.destinations];
+    // this.#offers = [...this.#pointsModel.offers];
+    // this.#destinations = [...this.#pointsModel.destinations];
 
     this.#renderHeader();
     this.#renderSort();
@@ -71,7 +72,7 @@ export default class PagePresenter {
   createEvent() {
     this.#currentSortType = SortTypes.DEFAULT;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#newEventFormPresenter.init(this.#offers, this.#destinations);
+    this.#newEventFormPresenter.init(this.#pointsModel.offers, this.#pointsModel.destinations);
   }
 
   #handleModeChange = () => {
@@ -112,7 +113,7 @@ export default class PagePresenter {
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#pointPresenters.get(data.id).init(data, this.#offers, this.#destinations);
+        this.#pointPresenters.get(data.id).init(data, this.#pointsModel.offers, this.#pointsModel.destinations);
         this.#clearTripList();
         this.#clearHeader();
         this.#renderHeader();
@@ -128,8 +129,8 @@ export default class PagePresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearTripList({resetSortType: true});
-        this.#clearHeader();
-        this.#renderHeader();
+        // this.#clearHeader();
+        // this.#renderHeader();
         this.#renderSort();
         this.#renderTripList();
         break;
@@ -179,7 +180,7 @@ export default class PagePresenter {
   }
 
   #renderPoints(points) {
-    points.forEach((point) => this.#renderPoint(point, this.#offers, this.#destinations));
+    points.forEach((point) => this.#renderPoint(point, this.#pointsModel.offers, this.#pointsModel.destinations));
   }
 
   #renderHeader() {
