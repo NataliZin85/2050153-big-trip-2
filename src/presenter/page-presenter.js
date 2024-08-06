@@ -1,6 +1,7 @@
 import EventSortView from '../view/sort-view.js';
 import EventListView from '../view/list-view.js';
 import NoEventsView from '../view/no-events-view.js';
+import LoadingView from '../view/loading-view.js';
 import HeaderPresenter from './header-presenter.js';
 import PointPresenter from './point-presenter.js';
 import NewEventFormPresenter from './add-event-form-presenter.js';
@@ -11,6 +12,7 @@ import { filterEvents } from '../utils/filter.js';
 
 export default class PagePresenter {
   #tripListComponent = new EventListView();
+  #loadingComponent = new LoadingView();
   #sortComponent = null;
   #noEventComponent = null;
 
@@ -21,6 +23,7 @@ export default class PagePresenter {
 
   #currentSortType = SortTypes.DEFAULT;
   #currentFilterType = FilterType.EVERYTHING;
+  #isLoading = true;
 
   // #offers = [];
   // #destinations = [];
@@ -134,6 +137,11 @@ export default class PagePresenter {
         this.#renderSort();
         this.#renderTripList();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderTripList();
+        break;
     }
   };
 
@@ -179,6 +187,11 @@ export default class PagePresenter {
     remove(this.#sortComponent);
   }
 
+  #renderLoading() {
+    remove(this.#sortComponent);
+    render(this.#loadingComponent, this.#pageContainer);
+  }
+
   #renderPoints(points) {
     points.forEach((point) => this.#renderPoint(point, this.#pointsModel.offers, this.#pointsModel.destinations));
   }
@@ -202,6 +215,7 @@ export default class PagePresenter {
     this.#pointPresenters.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
 
     if (this.#noEventComponent) {
       remove(this.#noEventComponent);
@@ -213,13 +227,19 @@ export default class PagePresenter {
   }
 
   #renderTripList() {
-    const points = this.points.slice(0, this.points.length);;
+    const points = this.points.slice(0, this.points.length);
     render(this.#tripListComponent, this.#pageContainer);
+
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
 
     if (this.points.length === 0) {
       this.#renderNoEvents();
       return;
     }
+
     this.#renderPoints(points);
   }
 }

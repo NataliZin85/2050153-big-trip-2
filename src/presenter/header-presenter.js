@@ -14,8 +14,9 @@ export default class HeaderPresenter {
 
   #filterPresenter = null;
 
-  #dataOffers = [];
-  #points = [];
+  #dataOffers = null;
+  #dataDestinations = null;
+  #points = null;
 
   constructor({headerContainer, pointsModel, filterModel}) {
     this.#headerContainer = headerContainer;
@@ -28,6 +29,7 @@ export default class HeaderPresenter {
   init() {
     this.#points = this.#pointsModel.points;
     this.#dataOffers = this.#pointsModel.offers;
+    this.#dataDestinations = this.#pointsModel.destinations;
 
     this.#renderTripInfo();
     this.#renderFilters();
@@ -48,6 +50,7 @@ export default class HeaderPresenter {
     this.#tripInfoComponent = new TripInfoView({
       points: this.#points,
       dataOffers: this.#dataOffers,
+      dataDestinations: this.#dataDestinations,
     });
     render(this.#tripInfoComponent, this.#tripInfoContainer, RenderPosition.AFTERBEGIN);
   }
