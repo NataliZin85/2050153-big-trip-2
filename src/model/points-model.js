@@ -41,8 +41,6 @@ export default class PointsModel extends Observable {
       throw new Error('Can\'t update unexisting event point');
     }
 
-    console.log(update);
-
     try {
       const response = await this.#pointsApiService.updatePoint(update);
       const updatedPoint = this.#adaptToClient(response);
