@@ -27,7 +27,6 @@ function createTripInfoTemplate(points, dataOffers, dataDestinations, currentFil
     const sortedPoints = filteredEvents.sort(sortByDay);
 
     const firstPoint = sortedPoints[0];
-    console.log(firstPoint);
     const secondPoint = sortedPoints[1];
     const lastPoint = sortedPoints[(sortedPoints.length - 1)];
 
