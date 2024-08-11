@@ -3,9 +3,6 @@ import duration from 'dayjs/plugin/duration';
 import { sortByDay } from '../utils/sort.js';
 
 dayjs.extend(duration);
-// eslint-disable-next-line no-undef
-const utc = require('dayjs/plugin/utc');
-dayjs.extend(utc);
 
 const MINUTES_IN_HOUR = 60;
 const SECONDS_IN_MINUTS = 60;
@@ -24,7 +21,7 @@ const dateFormat = {
 };
 
 // Приобразование данных по дате в нужный формат
-const humanizeDate = (pointDate, format) => pointDate ? dayjs.utc(pointDate).format(format) : '';
+const humanizeDate = (pointDate, format) => pointDate ? dayjs(pointDate).format(format) : '';
 
 // Приобразование формата отображения текста с первой заглавной буквой.
 // Пример: "Название Города"

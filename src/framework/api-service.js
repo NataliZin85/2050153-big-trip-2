@@ -33,8 +33,6 @@ export default class ApiService {
       {method, body, headers},
     );
 
-    console.log(response);
-
     try {
       ApiService.checkStatus(response);
       return response;

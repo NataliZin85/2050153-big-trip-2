@@ -6,9 +6,6 @@ import 'flatpickr/dist/flatpickr.min.css';
 import dayjs from 'dayjs';
 import he from 'he';
 
-// const utc = require('dayjs/plugin/utc');
-// dayjs.extend(utc);
-
 export function createDestinationNameTemplate(name) {
   return (`<option value=${name}></option>`);
 }
