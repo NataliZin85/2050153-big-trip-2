@@ -14,10 +14,6 @@ export default class HeaderPresenter {
 
   #filterPresenter = null;
 
-  #dataOffers = null;
-  #dataDestinations = null;
-  #points = null;
-
   constructor({headerContainer, pointsModel, filterModel}) {
     this.#headerContainer = headerContainer;
     this.#tripInfoContainer = this.#headerContainer.querySelector('.trip-main');
@@ -27,32 +23,31 @@ export default class HeaderPresenter {
   }
 
   init() {
-    this.#points = this.#pointsModel.points;
-    this.#dataOffers = this.#pointsModel.offers;
-    this.#dataDestinations = this.#pointsModel.destinations;
-
     this.#renderTripInfo();
     this.#renderFilters();
   }
 
   destroy() {
-    if (this.#tripInfoComponent === null) {
+    this.#filterPresenter.destroy();
+
+    if (this.#tripInfoComponent.element === null) {
       return;
     }
 
     remove(this.#tripInfoComponent);
     this.#tripInfoComponent = null;
-
-    this.#filterPresenter.destroy();
   }
 
   #renderTripInfo() {
     this.#tripInfoComponent = new TripInfoView({
-      points: this.#points,
-      dataOffers: this.#dataOffers,
-      dataDestinations: this.#dataDestinations,
+      points: this.#pointsModel.points,
+      dataOffers: this.#pointsModel.offers,
+      dataDestinations: this.#pointsModel.destinations,
+      currentFilterType: this.#filterModel.filter,
     });
-    render(this.#tripInfoComponent, this.#tripInfoContainer, RenderPosition.AFTERBEGIN);
+    if (this.#pointsModel.points.length !== 0) {
+      render(this.#tripInfoComponent, this.#tripInfoContainer, RenderPosition.AFTERBEGIN);
+    }
   }
 
   #renderFilters() {

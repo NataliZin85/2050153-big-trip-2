@@ -1,13 +1,13 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { DESTINATIONS, TYPES, BLANK_POINT } from '../const.js';
-import { humanizeDate, capitalizeWords, dateFormat, getOffersByType, getPointTypeOffer, getDestinationById, getDestinationByTargetName } from '../utils/event.js';
+import { TYPES, BLANK_POINT } from '../const.js';
+import { humanizeDate, capitalizeWords, dateFormat, getOffersByType, getPointTypeOffer, getDestinationById, getDestinationNames, getDestinationByTargetName } from '../utils/event.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import dayjs from 'dayjs';
 import he from 'he';
 
-const utc = require('dayjs/plugin/utc');
-dayjs.extend(utc);
+// const utc = require('dayjs/plugin/utc');
+// dayjs.extend(utc);
 
 export function createDestinationNameTemplate(name) {
   return (`<option value=${name}></option>`);
@@ -156,7 +156,7 @@ function createPointTypeTemplate(id, type) {
   );
 }
 
-function createHeaderTypeDestinationTemplate(type, destination, id, isNewForm) {
+function createHeaderTypeDestinationTemplate(type, destination, destinationsNames, id, isNewForm) {
   if (destination !== undefined) {
     return (
       `<div class="event__field-group  event__field-group--destination">
@@ -165,7 +165,7 @@ function createHeaderTypeDestinationTemplate(type, destination, id, isNewForm) {
         </label>
         <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value=${destination ? he.encode(destination.name) : ''} list="destination-list-${id}">
         <datalist id="destination-list-${id}">
-          ${DESTINATIONS.map((item) => createDestinationNameTemplate(item)).join('')}
+          ${destinationsNames.map((item) => createDestinationNameTemplate(item)).join('')}
         </datalist>
       </div>`
     );
@@ -177,7 +177,7 @@ function createHeaderTypeDestinationTemplate(type, destination, id, isNewForm) {
         </label>
         <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value='' list="destination-list-${id}" required>
         <datalist id="destination-list-${id}">
-          ${DESTINATIONS.map((item) => createDestinationNameTemplate(item)).join('')}
+          ${destinationsNames.map((item) => createDestinationNameTemplate(item)).join('')}
         </datalist>
       </div>`
     );
@@ -187,13 +187,14 @@ function createHeaderTypeDestinationTemplate(type, destination, id, isNewForm) {
 export function createPointFormTemplate({dataOffers, dataDestinations, resetButton, isNewForm, state}) {
   const { id, type, dateFrom, dateTo, basePrice } = state;
   const destination = getDestinationById(dataDestinations, state);
+  const destinationsNames = getDestinationNames(dataDestinations);
 
   return (
     `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
         <header class="event__header">
           ${createPointTypeTemplate(id, type)}
-          ${createHeaderTypeDestinationTemplate(type, destination, id, isNewForm)}
+          ${createHeaderTypeDestinationTemplate(type, destination, destinationsNames, id, isNewForm)}
           ${createDurationTemplate(id, dateFrom, dateTo, isNewForm)}
           ${createPriceTemplate(id, basePrice, isNewForm)}
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>

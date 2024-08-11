@@ -35,4 +35,9 @@ function handleNewEventButtonClick() {
   newEventButton.disabled = true;
 }
 
+newEventButton.disabled = true;
 pagePresenter.init();
+pointsModel.init()
+  .finally(() => {
+    newEventButton.disabled = false;
+  });

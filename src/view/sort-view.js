@@ -22,6 +22,7 @@ function createSortContainerTemplate(currentSortType) {
 }
 
 export default class EventSortView extends AbstractView {
+  #points = null;
   #currentSortType = null;
   #handleSortTypeChange = null;
 

@@ -1,22 +1,24 @@
 import AbstractView from '../framework/view/abstract-view.js';
-// import { FilterType } from '../const.js';
+import { filterEvents } from '../utils/filter.js';
 import { capitalizeWords } from '../utils/event.js';
 
-function createFilterTemplate(filter, currentFilterType) {
+function createFilterTemplate(filter, currentFilterType, points) {
   const { type } = filter;
+  const filteredEvents = filterEvents[type](points);
+
   return (
     `<div class="trip-filters__filter">
-      <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" ${type === currentFilterType ? 'checked' : ''}>
+      <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" ${type === currentFilterType ? 'checked' : ''} ${filteredEvents.length === 0 ? 'disabled' : ''}>
       <label class="trip-filters__filter-label" for="filter-${type}">${capitalizeWords(type)}</label>
     </div>`
   );
 }
 
 // ${Object.values(FilterType).map((filter) => createFilterTemplate(filter, currentFilterType)).join('')}
-function createEventFiltersTemplate(filters, currentFilterType) {
+function createEventFiltersTemplate(filters, currentFilterType, points) {
   return (
     `<form class="trip-filters" action="#" method="get">
-      ${filters.map((filter) => createFilterTemplate(filter, currentFilterType)).join('')}
+      ${filters.map((filter) => createFilterTemplate(filter, currentFilterType, points)).join('')}
 
       <button class="visually-hidden" type="submit">Accept filter</button>
     </form>`
@@ -26,11 +28,13 @@ function createEventFiltersTemplate(filters, currentFilterType) {
 export default class EventFilterView extends AbstractView {
   #filters = null;
   #currentFilter = null;
+  #points = null;
   #handleFilterTypeChange = null;
 
-  constructor({filters, currentFilterType, onFilterTypeChange}) {
+  constructor({filters, currentFilterType, onFilterTypeChange, points}) {
     super();
     this.#filters = filters;
+    this.#points = points;
     this.#currentFilter = currentFilterType;
     this.#handleFilterTypeChange = onFilterTypeChange;
 
@@ -38,7 +42,7 @@ export default class EventFilterView extends AbstractView {
   }
 
   get template() {
-    return createEventFiltersTemplate(this.#filters, this.#currentFilter);
+    return createEventFiltersTemplate(this.#filters, this.#currentFilter, this.#points);
   }
 
   #filterTypeChangeHandler = (evt) => {

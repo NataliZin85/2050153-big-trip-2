@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import { sortByDay } from '../utils/sort.js';
 
 dayjs.extend(duration);
 // eslint-disable-next-line no-undef
@@ -18,6 +19,8 @@ const dateFormat = {
   MONTH_DAY: 'MMM DD',
   HOURS: 'HH:mm',
   DATE_POINT: 'YYYY-MM-DD',
+  DATE_MONTH: 'DD MMM',
+  DATE_DAY: 'DD',
 };
 
 // Приобразование данных по дате в нужный формат
@@ -37,23 +40,23 @@ const getLongDuration = (start, end) => {
   const durationInDays = dayjs.duration(dayjs(end).diff(dayjs(start))).asDays();
   const durationInHours = dayjs.duration(dayjs(end).diff(dayjs(start))).asHours();
 
-  let days = Math.round(durationInDays);
+  let days = Math.round(durationInDays).toString();
   const restDays = durationInDays - days;
   const restHours = durationInHours - Math.round(durationInHours);
   let hours = 0;
   if (restDays < 0) {
-    hours = Math.round((1 + restDays) * HOURS_IN_DAY);
+    hours = Math.round((1 + restDays) * HOURS_IN_DAY).toString();
     days = days - 1;
   } else {
-    hours = Math.round(restDays * HOURS_IN_DAY);
+    hours = Math.round(restDays * HOURS_IN_DAY).toString();
   }
 
   let minutes = 0;
   if (restHours < 0) {
-    minutes = Math.round((1 + restHours) * MINUTES_IN_HOUR);
+    minutes = Math.round((1 + restHours) * MINUTES_IN_HOUR).toString();
     hours = hours - 1;
   } else {
-    minutes = Math.round(restHours * MINUTES_IN_HOUR);
+    minutes = Math.round(restHours * MINUTES_IN_HOUR).toString();
   }
 
   if((hours.toString()).length === 1 && (minutes.toString()).length !== 1){
@@ -85,6 +88,7 @@ function getDurationInTime(start, end) {
   } else if (differenceInHours >= HOURS_IN_DAY) {
     if(dayjs(end).diff(dayjs(start), 'day') > DAYS_IN_MONTH) {
       pointDuration = getLongDuration(start, end);
+      // pointDuration = dayjs(difference).format('DDD[D] HH[H] mm[M]');
     } else {
       pointDuration = dayjs(difference).format('DD[D] HH[H] mm[M]');
     }
@@ -117,7 +121,19 @@ const getOfferById = (dataOffers, point) => {
  * dataDestinations - все имеющиеся описания точек маршрута;
  * point - точка маршрута;
  */
-const getDestinationById = (dataDestinations, point) => dataDestinations.find((item)=>item.id === point.destination);
+const getDestinationById = (dataDestinations, point) => dataDestinations.find((item) => item.id === point.destination);
+
+const getDestinationNames = (dataDestinations) => {
+  let uniqeDestinationsNames = [];
+  dataDestinations.forEach((i) => uniqeDestinationsNames.push(i.name));
+  uniqeDestinationsNames.reduce((accumulator, currentValue) => {
+    if (!accumulator.includes(currentValue)) {
+      accumulator.push(currentValue);
+    }
+    return accumulator;
+  }, []);
+  return uniqeDestinationsNames;
+};
 
 /**
  * getDestinationByTargetName - Получение описания точки маршрута в зависимости от названия точки назначения.
@@ -157,5 +173,4 @@ const getTotalPrice = (points, offers) => {
   return totalPrice;
 };
 
-
-export { dateFormat, humanizeDate, getDurationInTime, capitalizeWords, getPointTypeOffer, getOfferById, getDestinationByTargetName, getDestinationById, getTotalPrice };
+export { dateFormat, humanizeDate, getDurationInTime, capitalizeWords, getPointTypeOffer, getOfferById, getDestinationByTargetName, getDestinationById, getDestinationNames, getTotalPrice };

@@ -51,7 +51,6 @@ export default class PagePresenter {
   get points() {
     this.#currentFilterType = this.#filterModel.filter;
     const points = this.#pointsModel.points;
-    console.log(points);
     const filteredPoints = filterEvents[this.#currentFilterType](points);
 
     switch (this.#currentSortType) {
@@ -67,7 +66,6 @@ export default class PagePresenter {
     // this.#offers = [...this.#pointsModel.offers];
     // this.#destinations = [...this.#pointsModel.destinations];
 
-    this.#renderHeader();
     this.#renderSort();
     this.#renderTripList();
   }
@@ -132,14 +130,17 @@ export default class PagePresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearTripList({resetSortType: true});
-        // this.#clearHeader();
-        // this.#renderHeader();
+        this.#clearHeader();
+        this.#renderHeader();
         this.#renderSort();
         this.#renderTripList();
         break;
       case UpdateType.INIT:
         this.#isLoading = false;
         remove(this.#loadingComponent);
+        this.#clearHeader();
+        this.#renderHeader();
+        this.#renderSort();
         this.#renderTripList();
         break;
     }
@@ -185,11 +186,12 @@ export default class PagePresenter {
     });
     render(this.#noEventComponent, this.#pageContainer);
     remove(this.#sortComponent);
+
   }
 
   #renderLoading() {
-    remove(this.#sortComponent);
     render(this.#loadingComponent, this.#pageContainer);
+    remove(this.#sortComponent);
   }
 
   #renderPoints(points) {
@@ -231,6 +233,7 @@ export default class PagePresenter {
     render(this.#tripListComponent, this.#pageContainer);
 
     if (this.#isLoading) {
+      this.#renderHeader();
       this.#renderLoading();
       return;
     }

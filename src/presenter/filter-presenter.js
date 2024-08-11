@@ -30,6 +30,7 @@ export default class FilterPresenter {
 
     this.#filterComponent = new EventFilterView({
       filters,
+      points: this.#pointsModel.points,
       currentFilterType: this.#filterModel.filter,
       onFilterTypeChange: this.#handleFilterTypeChange
     });
