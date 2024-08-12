@@ -9,53 +9,51 @@ export default class HeaderPresenter {
   #tripInfoContainer = null;
   #filterContainer = null;
 
-  #eventsModel = null;
+  #pointsModel = null;
   #filterModel = null;
 
   #filterPresenter = null;
 
-  #dataOffers = [];
-  #events = [];
-
-  constructor({headerContainer, eventsModel, filterModel}) {
+  constructor({headerContainer, pointsModel, filterModel}) {
     this.#headerContainer = headerContainer;
     this.#tripInfoContainer = this.#headerContainer.querySelector('.trip-main');
     this.#filterContainer = this.#headerContainer.querySelector('.trip-controls__filters');
-    this.#eventsModel = eventsModel;
+    this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
   }
 
   init() {
-    this.#events = this.#eventsModel.events;
-    this.#dataOffers = this.#eventsModel.offers;
-
     this.#renderTripInfo();
     this.#renderFilters();
   }
 
   destroy() {
-    if (this.#tripInfoComponent === null) {
+    this.#filterPresenter.destroy();
+
+    if (this.#tripInfoComponent.element === null) {
       return;
     }
 
     remove(this.#tripInfoComponent);
     this.#tripInfoComponent = null;
-
-    this.#filterPresenter.destroy();
   }
 
   #renderTripInfo() {
     this.#tripInfoComponent = new TripInfoView({
-      events: this.#events,
-      dataOffers: this.#dataOffers,
+      points: this.#pointsModel.points,
+      dataOffers: this.#pointsModel.offers,
+      dataDestinations: this.#pointsModel.destinations,
+      currentFilterType: this.#filterModel.filter,
     });
-    render(this.#tripInfoComponent, this.#tripInfoContainer, RenderPosition.AFTERBEGIN);
+    if (this.#pointsModel.points.length !== 0) {
+      render(this.#tripInfoComponent, this.#tripInfoContainer, RenderPosition.AFTERBEGIN);
+    }
   }
 
   #renderFilters() {
     this.#filterPresenter = new FilterPresenter({
       filterContainer: this.#filterContainer,
-      eventsModel: this.#eventsModel,
+      pointsModel: this.#pointsModel,
       filterModel: this.#filterModel,
     });
     this.#filterPresenter.init();

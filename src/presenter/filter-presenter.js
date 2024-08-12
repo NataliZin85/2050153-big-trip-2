@@ -1,27 +1,24 @@
 import { render, replace, remove } from '../framework/render.js';
 import EventFilterView from '../view/filter-view.js';
-import { filterEvents } from '../utils/filter.js';
 import { FilterType, UpdateType } from '../const.js';
 
 export default class FilterPresenter {
   #filterContainer = null;
   #filterModel = null;
-  #eventsModel = null;
+  #pointsModel = null;
 
   #filterComponent = null;
 
-  constructor({filterContainer, filterModel, eventsModel}) {
+  constructor({filterContainer, filterModel, pointsModel}) {
     this.#filterContainer = filterContainer;
     this.#filterModel = filterModel;
-    this.#eventsModel = eventsModel;
+    this.#pointsModel = pointsModel;
 
-    this.#eventsModel.addObserver(this.#handleModelEvent);
+    this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get filters() {
-    const events = this.#eventsModel.events;
-
     return Object.values(FilterType).map((type) => ({
       type,
     }));
@@ -33,6 +30,7 @@ export default class FilterPresenter {
 
     this.#filterComponent = new EventFilterView({
       filters,
+      points: this.#pointsModel.points,
       currentFilterType: this.#filterModel.filter,
       onFilterTypeChange: this.#handleFilterTypeChange
     });

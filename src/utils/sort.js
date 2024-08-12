@@ -1,22 +1,22 @@
 import dayjs from 'dayjs';
 
-function getDuration(event) {
-  return dayjs(event.dateTo).diff(dayjs(event.dateFrom));
+function getDuration(point) {
+  return dayjs(point.dateTo).diff(dayjs(point.dateFrom));
 }
 
-function sortByDay(eventA, eventB) {
-  return eventA.dateFrom - eventB.dateFrom;
+function sortByDay(pointA, pointB) {
+  return pointA.dateFrom - pointB.dateFrom;
 }
 
-function sortByTime(eventA, eventB) {
-  const durationA = getDuration(eventA);
-  const durationB = getDuration(eventB);
+function sortByTime(pointA, pointB) {
+  const durationA = getDuration(pointA);
+  const durationB = getDuration(pointB);
 
   return durationB - durationA;
 }
 
-function sortByPrice(eventA, eventB) {
-  return eventA.basePrice - eventB.basePrice;
+function sortByPrice(pointA, pointB) {
+  return pointA.basePrice - pointB.basePrice;
 }
 
 export { sortByDay, sortByTime, sortByPrice };

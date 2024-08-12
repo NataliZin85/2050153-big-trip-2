@@ -1,28 +1,3 @@
-const DESTINATIONS = [
-  'Amsterdam',
-  'Chamonix',
-  'Geneva',
-  'Sydney',
-  'Phuket',
-  'Fiji',
-  'Paris',
-  'Venice'
-];
-
-const DESCRIPTIONS = [
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ',
-  'Cras aliquet varius magna, non porta ligula feugiat eget. ',
-  'Fusce tristique felis at fermentum pharetra. ',
-  'Aliquam id orci ut lectus varius viverra. ',
-  'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. ',
-  'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. ',
-  'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. ',
-  'Sed sed nisi sed augue convallis suscipit in sed felis. ',
-  'Aliquam erat volutpat. ',
-  'Nunc fermentum tortor ac porta dapibus. ',
-  'In rutrum ac purus sit amet tempus. ',
-];
-
 const TYPES = [
   'taxi',
   'bus',
@@ -35,7 +10,7 @@ const TYPES = [
   'restaurant'
 ];
 
-const EVENT_COUNT = 3;
+const POINT_COUNT = 3;
 
 const FilterType = {
   EVERYTHING: 'everything',
@@ -65,21 +40,22 @@ const SortTypes = {
 };
 
 const UserAction = {
-  UPDATE_EVENT: 'UPDATE_EVENT',
-  ADD_EVENT: 'ADD_EVENT',
-  DELETE_EVENT: 'DELETE_EVENT',
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
 };
 
 const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 const FormResetButton = {
   DELETE: 'Delete',
   CANCEL: 'Cancel'
-}
+};
 
 const BLANK_POINT = {
   basePrice: 0,
@@ -91,4 +67,4 @@ const BLANK_POINT = {
   type: 'flight'
 };
 
-export { DESTINATIONS, DESCRIPTIONS, TYPES, EVENT_COUNT, TextNoEvent, Mode, SortTypes, FilterType, UserAction, UpdateType, FormResetButton, BLANK_POINT };
+export { TYPES, POINT_COUNT, TextNoEvent, Mode, SortTypes, FilterType, UserAction, UpdateType, FormResetButton, BLANK_POINT };

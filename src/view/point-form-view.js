@@ -1,13 +1,10 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { DESTINATIONS, TYPES, BLANK_POINT } from '../const.js';
-import { humanizeDate, capitalizeWords, dateFormat, getOffersByType, getPointTypeOffer, getDestinationById, getDestinationByTargetName } from '../utils/event.js';
+import { TYPES, BLANK_POINT } from '../const.js';
+import { humanizeDate, capitalizeWords, dateFormat, getOffersByType, getPointTypeOffer, getDestinationById, getDestinationNames, getDestinationByTargetName } from '../utils/event.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import dayjs from 'dayjs';
 import he from 'he';
-
-const utc = require('dayjs/plugin/utc');
-dayjs.extend(utc);
 
 export function createDestinationNameTemplate(name) {
   return (`<option value=${name}></option>`);
@@ -38,17 +35,17 @@ function createOfferTemplate(offer, offers) {
   );
 }
 
-export function createOfferContainerTemplate(dataOffers, event) {
-  const { offers } = event;
-  const eventOffers = getPointTypeOffer(dataOffers, event);
-  
-  if (eventOffers.length !== 0) {
+export function createOfferContainerTemplate(dataOffers, point) {
+  const { offers } = point;
+  const pointOffers = getPointTypeOffer(dataOffers, point);
+
+  if (pointOffers.length !== 0) {
     return (
       `<section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
         <div class="event__available-offers">
-          ${eventOffers.offers.map((offer) => createOfferTemplate(offer, offers)).join('')}
+          ${pointOffers.offers.map((offer) => createOfferTemplate(offer, offers)).join('')}
         </div>
       </section>`
     );
@@ -136,7 +133,7 @@ function createDurationTemplate(id, dateFrom, dateTo, isNewForm) {
   );
 }
 
-function createEventTypeTemplate(id, type) {
+function createPointTypeTemplate(id, type) {
   return (
     `<div class="event__type-wrapper">
       <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
@@ -156,7 +153,7 @@ function createEventTypeTemplate(id, type) {
   );
 }
 
-function createHeaderTypeDestinationTemplate(type, destination, id, isNewForm) {
+function createHeaderTypeDestinationTemplate(type, destination, destinationsNames, id, isNewForm) {
   if (destination !== undefined) {
     return (
       `<div class="event__field-group  event__field-group--destination">
@@ -165,7 +162,7 @@ function createHeaderTypeDestinationTemplate(type, destination, id, isNewForm) {
         </label>
         <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value=${destination ? he.encode(destination.name) : ''} list="destination-list-${id}">
         <datalist id="destination-list-${id}">
-          ${DESTINATIONS.map((item) => createDestinationNameTemplate(item)).join('')}
+          ${destinationsNames.map((item) => createDestinationNameTemplate(item)).join('')}
         </datalist>
       </div>`
     );
@@ -177,23 +174,24 @@ function createHeaderTypeDestinationTemplate(type, destination, id, isNewForm) {
         </label>
         <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value='' list="destination-list-${id}" required>
         <datalist id="destination-list-${id}">
-          ${DESTINATIONS.map((item) => createDestinationNameTemplate(item)).join('')}
+          ${destinationsNames.map((item) => createDestinationNameTemplate(item)).join('')}
         </datalist>
       </div>`
     );
   }
 }
 
-export function createEventFormTemplate({dataOffers, dataDestinations, resetButton, isNewForm, state}) {
+export function createPointFormTemplate({dataOffers, dataDestinations, resetButton, isNewForm, state}) {
   const { id, type, dateFrom, dateTo, basePrice } = state;
   const destination = getDestinationById(dataDestinations, state);
+  const destinationsNames = getDestinationNames(dataDestinations);
 
   return (
     `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
         <header class="event__header">
-          ${createEventTypeTemplate(id, type)}
-          ${createHeaderTypeDestinationTemplate(type, destination, id, isNewForm)}
+          ${createPointTypeTemplate(id, type)}
+          ${createHeaderTypeDestinationTemplate(type, destination, destinationsNames, id, isNewForm)}
           ${createDurationTemplate(id, dateFrom, dateTo, isNewForm)}
           ${createPriceTemplate(id, basePrice, isNewForm)}
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -211,7 +209,7 @@ export function createEventFormTemplate({dataOffers, dataDestinations, resetButt
   );
 }
 
-export default class EventFormView extends AbstractStatefulView {
+export default class PointFormView extends AbstractStatefulView {
   #dataOffers = null;
   #dataDestinations = null;
   #resetButton = null;
@@ -224,7 +222,7 @@ export default class EventFormView extends AbstractStatefulView {
   #datepickerFrom = null;
   #datepickerTo = null;
 
-  constructor({event = BLANK_POINT, dataOffers, dataDestinations, resetButton, isNewForm, onFormSubmit, onFormEditClick, onResetClick}) {
+  constructor({point = BLANK_POINT, dataOffers, dataDestinations, resetButton, isNewForm, onFormSubmit, onFormEditClick, onResetClick}) {
     super();
     this.#dataOffers = dataOffers;
     this.#dataDestinations = dataDestinations;
@@ -234,12 +232,12 @@ export default class EventFormView extends AbstractStatefulView {
     this._handleEventFormSubmit = onFormSubmit;
     this._handleResetClick = onResetClick;
 
-    this._setState(EventFormView.parseEventToState({event}));
+    this._setState(PointFormView.parsePointToState({point}));
     this._restoreHandlers();
   }
 
   get template() {
-    return createEventFormTemplate({
+    return createPointFormTemplate({
       dataDestinations: this.#dataDestinations,
       dataOffers: this.#dataOffers,
       resetButton: this.#resetButton,
@@ -295,7 +293,7 @@ export default class EventFormView extends AbstractStatefulView {
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
 
-    const selectedDestination = this.#dataDestinations.find((eventDestination) => eventDestination.name === evt.target.value);
+    const selectedDestination = this.#dataDestinations.find((pointDestination) => pointDestination.name === evt.target.value);
     const selectedDestinationId = (selectedDestination) ? selectedDestination.id : null;
     this.updateElement({
       destination: selectedDestinationId,
@@ -366,12 +364,12 @@ export default class EventFormView extends AbstractStatefulView {
 
   _formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._handleEventFormSubmit(EventFormView.parseStateToEvent(this._state));
+    this._handleEventFormSubmit(PointFormView.parseStateToPoint(this._state));
   };
 
   _formResetClickHandler = (evt) => {
     evt.preventDefault();
-    this._handleResetClick(EventFormView.parseStateToEvent(this._state));
+    this._handleResetClick(PointFormView.parseStateToPoint(this._state));
   };
 
   _editClickHandler = (evt) => {
@@ -379,7 +377,7 @@ export default class EventFormView extends AbstractStatefulView {
     this._handleFormEditClick();
   };
 
-  static parseEventToState = ({event}) => ({...event});
+  static parsePointToState = ({point}) => ({...point});
 
-  static parseStateToEvent = (state) => ({...state});
+  static parseStateToPoint = (state) => ({...state});
 }
