@@ -87,17 +87,32 @@ export default class PagePresenter {
    * updateType - тип изменений, нужно чтобы понять, что после нужно обновить
    * update - обновленные данные
    */
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
     // console.log(actionType, updateType, update);
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
-        this.#pointsModel.updatePoint(updateType, update);
+        this.#pointPresenters.get(update.id).setSaving();
+        try {
+          await this.#pointsModel.updatePoint(updateType, update);
+        } catch(err) {
+          this.#pointPresenters.get(update.id).setAborting();
+        }
         break;
       case UserAction.ADD_EVENT:
-        this.#pointsModel.addPoint(updateType, update);
+        this.#newEventFormPresenter.setSaving();
+        try {
+          await this.#pointsModel.addPoint(updateType, update);
+        } catch(err) {
+          this.#newEventFormPresenter.setAborting();
+        }
         break;
       case UserAction.DELETE_EVENT:
-        this.#pointsModel.deletePoint(updateType, update);
+        this.#pointPresenters.get(update.id).setDeleting();
+        try {
+          await this.#pointsModel.deletePoint(updateType, update);
+        } catch(err) {
+          this.#pointPresenters.get(update.id).setAborting();
+        }
         break;
     }
   };

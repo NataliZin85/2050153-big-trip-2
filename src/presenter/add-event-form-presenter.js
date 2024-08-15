@@ -32,8 +32,8 @@ export default class NewEventFormPresenter {
       dataDestinations: this.#dataDestinations,
       resetButton: FormResetButton.CANCEL,
       isNewForm: true,
-      onFormEditClick: this._handleFormEditClick,
-      onFormSubmit: this._handlePointFormSubmit,
+      // onFormEditClick: this._handleFormEditClick,
+      onFormSubmit: this.#handleFormSubmit,
       onResetClick: this._handleResetClick,
     });
 
@@ -55,22 +55,42 @@ export default class NewEventFormPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
-  _handlePointFormSubmit = (point) => {
+  setSaving() {
+    this.#newEventFormComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#newEventFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#newEventFormComponent.shake(resetFormState);
+  }
+
+  #handleFormSubmit = (point) => {
     this.#handleDataChange(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
       point,
     );
-    this.destroy();
   };
 
   _handleResetClick = () => {
     this.destroy();
   };
 
-  _handleFormEditClick = () => {
-    this.destroy();
-  };
+  // _handleFormEditClick = () => {
+  //   this.destroy();
+  //   // this.#replaceFormToPoint();
+  //   // document.addEventListener('keydown', this.#escKeyDownHandler);
+  // };
 
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
