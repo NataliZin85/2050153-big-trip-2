@@ -1,11 +1,9 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import { sortByDay } from '../utils/sort.js';
 
 dayjs.extend(duration);
 
 const MINUTES_IN_HOUR = 60;
-const SECONDS_IN_MINUTS = 60;
 const ONE_HOUR = 1;
 const HOURS_IN_DAY = 24;
 const DAYS_IN_MONTH = 30;
@@ -25,7 +23,7 @@ const humanizeDate = (pointDate, format) => pointDate ? dayjs(pointDate).format(
 
 // Приобразование формата отображения текста с первой заглавной буквой.
 // Пример: "Название Города"
-const capitalizeWords = (str) => str.replace(/\b\w/g, c => c.toUpperCase());
+const capitalizeWords = (str) => str.replace(/\b\w/g, (c) => (c).toUpperCase());
 
 /**
  * getLongDuration - Получение длительности события, которое более 99 дней по продолжительности
@@ -79,7 +77,7 @@ function getDurationInTime(start, end) {
   let pointDuration;
 
   if (differenceInHours < ONE_HOUR) {
-    pointDuration = dayjs(difference).format('mm[M]');;
+    pointDuration = dayjs(difference).format('mm[M]');
   } else if (differenceInHours > ONE_HOUR && differenceInHours < HOURS_IN_DAY) {
     pointDuration = dayjs(difference).format('HH[H] mm[M]');
   } else if (differenceInHours >= HOURS_IN_DAY) {
@@ -121,7 +119,7 @@ const getOfferById = (dataOffers, point) => {
 const getDestinationById = (dataDestinations, point) => dataDestinations.find((item) => item.id === point.destination);
 
 const getDestinationNames = (dataDestinations) => {
-  let uniqeDestinationsNames = [];
+  const uniqeDestinationsNames = [];
   dataDestinations.forEach((i) => uniqeDestinationsNames.push(i.name));
   uniqeDestinationsNames.reduce((accumulator, currentValue) => {
     if (!accumulator.includes(currentValue)) {
@@ -133,14 +131,6 @@ const getDestinationNames = (dataDestinations) => {
 };
 
 /**
- * getDestinationByTargetName - Получение описания точки маршрута в зависимости от названия точки назначения.
- * Parametrs:
- * dataDestinations - все имеющиеся описания точек маршрута;
- * targetName - название точки назначения;
- */
-const getDestinationByTargetName = (dataDestinations, targetName) => dataDestinations.find((item)=>item.name === targetName);
-
-/**
  * Function to getTotalPrice - получение значения конечной цены точеки назначения плюс дополнительные расстраты
  * Parametrs: point offers
  */
@@ -149,7 +139,7 @@ const getTotalEventPrice = (point, offers) => {
   let totalOfferesPrice = 0;
 
   pointOffers.forEach((offer) => {
-      totalOfferesPrice += offer.price;
+    totalOfferesPrice += offer.price;
   });
 
   const totalEventPrice = Number(point.basePrice) + totalOfferesPrice;
@@ -170,4 +160,4 @@ const getTotalPrice = (points, offers) => {
   return totalPrice;
 };
 
-export { dateFormat, humanizeDate, getDurationInTime, capitalizeWords, getPointTypeOffer, getOfferById, getDestinationByTargetName, getDestinationById, getDestinationNames, getTotalPrice };
+export { dateFormat, humanizeDate, getDurationInTime, capitalizeWords, getPointTypeOffer, getOfferById, getDestinationById, getDestinationNames, getTotalPrice };

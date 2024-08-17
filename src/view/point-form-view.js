@@ -1,6 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { TYPES, FormResetButtonAction, BLANK_POINT } from '../const.js';
-import { humanizeDate, capitalizeWords, dateFormat, getOffersByType, getPointTypeOffer, getDestinationById, getDestinationNames, getDestinationByTargetName } from '../utils/event.js';
+import { humanizeDate, capitalizeWords, dateFormat, getPointTypeOffer, getDestinationById, getDestinationNames } from '../utils/event.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import dayjs from 'dayjs';
@@ -315,7 +315,7 @@ export default class PointFormView extends AbstractStatefulView {
 
   #priceChangeHandler = (evt) => {
     evt.preventDefault();
-    evt.target.value = evt.target.value.replace(/\D+/g, "");
+    evt.target.value = evt.target.value.replace(/\D+/g, '');
     this._setState({
       basePrice: evt.target.value,
     });
@@ -342,8 +342,8 @@ export default class PointFormView extends AbstractStatefulView {
       altInput: true,
       altFormat: 'd/m/y H:i',
       enableTime: true,
-      "time_24hr": true,
-    }
+      'time_24hr': true,
+    };
 
     this.#datepickerFrom = flatpickr(
       dateFromElement,
@@ -381,13 +381,7 @@ export default class PointFormView extends AbstractStatefulView {
     this._handleFormEditClick();
   };
 
-  static parsePointToState = ({point}) => {
-    return {...point,
-      isDisabled: false,
-      isSaving: false,
-      isDeleting: false,
-    };
-  };
+  static parsePointToState = ({point}) => ({...point, isDisabled: false, isSaving: false, isDeleting: false});
 
   static parseStateToPoint = (state) => {
     const point = {...state};

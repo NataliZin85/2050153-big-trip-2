@@ -9,17 +9,11 @@ dayjs.extend(isSameOrBefore);
 const isSameOrAfter = require('dayjs/plugin/isSameOrAfter');
 dayjs.extend(isSameOrAfter);
 
-const isPointInPresent = (dateStart, dateEnd) => {
-  return dayjs().isSameOrAfter(dateStart, 'D') && dayjs().isSameOrBefore(dateEnd, 'D');
-};
+const isPointInPresent = (dateStart, dateEnd) => dayjs().isSameOrAfter(dateStart, 'D') && dayjs().isSameOrBefore(dateEnd, 'D');
 
-const isPointInPast = (dateEnd) => {
-  return dateEnd && dayjs().isAfter(dateEnd, 'D');
-};
+const isPointInPast = (dateEnd) => dateEnd && dayjs().isAfter(dateEnd, 'D');
 
-const isPointInFuture = (dateStart) => {
-  return dateStart && dayjs().isBefore(dateStart, 'D');
-};
+const isPointInFuture = (dateStart) => dateStart && dayjs().isBefore(dateStart, 'D');
 
 const filterEvents = {
   [FilterType.EVERYTHING]: (points) => points,

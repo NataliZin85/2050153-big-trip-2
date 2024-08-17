@@ -8,7 +8,7 @@ const pageMainElement = document.querySelector('.page-main');
 const pageMainSortElement = pageMainElement.querySelector('.trip-events');
 const newEventButton = document.querySelector('.trip-main__event-add-btn');
 
-const AUTHORIZATION = `Basic bmF0YWxpYTp6aW5vdmV2YQ==`;
+const AUTHORIZATION = 'Basic bmF0YWxpYTp6aW5vdmV2YQ==';
 const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
 
 const pointsModel = new PointsModel({
