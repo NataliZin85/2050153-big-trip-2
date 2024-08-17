@@ -73,7 +73,6 @@ function createPicturesTemplate(pictures) {
 }
 
 export function createDestinationTemplate(destination) {
-  console.log(destination !== undefined);
   if (destination !== undefined) {
     if (destination.length > 0 || destination.description.length > 0) {
       const { description, pictures } = destination;

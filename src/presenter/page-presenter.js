@@ -6,9 +6,15 @@ import HeaderPresenter from './header-presenter.js';
 import PointPresenter from './point-presenter.js';
 import NewEventFormPresenter from './add-event-form-presenter.js';
 import { render, remove, RenderPosition } from '../framework/render.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import { SortTypes, UpdateType, UserAction, FilterType } from '../const.js';
 import { sortByDay, sortByTime, sortByPrice } from '../utils/sort.js';
 import { filterEvents } from '../utils/filter.js';
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
 export default class PagePresenter {
   #tripListComponent = new EventListView();
@@ -25,6 +31,10 @@ export default class PagePresenter {
   #currentFilterType = FilterType.EVERYTHING;
   #newEventButton = null;
   #isLoading = true;
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   #newEventFormPresenter = null;
   #pointPresenters = new Map();
@@ -92,7 +102,7 @@ export default class PagePresenter {
    * update - обновленные данные
    */
   #handleViewAction = async (actionType, updateType, update) => {
-    console.log(actionType, updateType, update);
+    this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#pointPresenters.get(update.id).setSaving();
@@ -119,6 +129,7 @@ export default class PagePresenter {
         }
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   /**
@@ -131,7 +142,6 @@ export default class PagePresenter {
   * data - обновленные данные
   */
   #handleModelEvent = (updateType, data) => {
-    console.log(updateType);
     switch (updateType) {
       case UpdateType.PATCH:
         this.#pointPresenters.get(data.id).init(data, this.#pointsModel.offers, this.#pointsModel.destinations);
