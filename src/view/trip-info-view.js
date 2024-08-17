@@ -45,7 +45,7 @@ function createTripInfoTemplate(points, dataOffers, dataDestinations, currentFil
           </p>
         </div>
         <p class="trip-info__cost">
-          Total: &euro;&nbsp;<span class="trip-info__cost-value">${getTotalPrice(points, dataOffers)}</span>
+          Total: &euro;&nbsp;<span class="trip-info__cost-value">${getTotalPrice(filteredEvents, dataOffers)}</span>
         </p>
       </section>`
     );

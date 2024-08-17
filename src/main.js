@@ -16,15 +16,16 @@ const pointsModel = new PointsModel({
 });
 const filterModel = new FilterModel();
 
-newEventButton.addEventListener('click', handleNewEventButtonClick);
-
 const pagePresenter = new PagePresenter({
   pageContainer: pageMainSortElement,
   headerContainer: headerElement,
   pointsModel,
   filterModel,
-  onNewEventDestroy: handleNewEventFormClose
+  newEventButton,
+  onNewEventDestroy: handleNewEventFormClose,
 });
+
+newEventButton.addEventListener('click', handleNewEventButtonClick);
 
 function handleNewEventFormClose() {
   newEventButton.disabled = false;

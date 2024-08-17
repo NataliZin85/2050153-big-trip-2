@@ -32,8 +32,8 @@ export default class NewEventFormPresenter {
       dataDestinations: this.#dataDestinations,
       resetButton: FormResetButton.CANCEL,
       isNewForm: true,
-      // onFormEditClick: this._handleFormEditClick,
-      onFormSubmit: this.#handleFormSubmit,
+      onFormEditClick: this._handleFormEditClick,
+      onFormSubmit: this._handleFormSubmit,
       onResetClick: this._handleResetClick,
     });
 
@@ -74,7 +74,7 @@ export default class NewEventFormPresenter {
     this.#newEventFormComponent.shake(resetFormState);
   }
 
-  #handleFormSubmit = (point) => {
+  _handleFormSubmit = (point) => {
     this.#handleDataChange(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
@@ -86,11 +86,9 @@ export default class NewEventFormPresenter {
     this.destroy();
   };
 
-  // _handleFormEditClick = () => {
-  //   this.destroy();
-  //   // this.#replaceFormToPoint();
-  //   // document.addEventListener('keydown', this.#escKeyDownHandler);
-  // };
+  _handleFormEditClick = () => {
+    this.destroy();
+  };
 
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {

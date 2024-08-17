@@ -48,7 +48,7 @@ export default class PointPresenter {
       resetButton: FormResetButton.DELETE,
       isNewForm: false,
       onFormEditClick: this._handleFormEditClick,
-      onFormSubmit: this.#handleFormSubmit,
+      onFormSubmit: this._handleFormSubmit,
       onResetClick: this._handleResetClick,
     });
 
@@ -155,7 +155,7 @@ export default class PointPresenter {
     document.addEventListener('keydown', this.#escKeyDownHandler);
   };
 
-  #handleFormSubmit = (update) => {
+  _handleFormSubmit = (update) => {
     // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
     // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
     const isMinorUpdate =
@@ -164,7 +164,7 @@ export default class PointPresenter {
       isPointInFuture(this.#point.dateFrom) !== isPointInFuture(update.dateFrom);
 
     this.#handleDataChange(
-      UserAction.UPDATE_EVENT,
+      UserAction.UPDATE_POINT,
       isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       update
     );
@@ -175,7 +175,7 @@ export default class PointPresenter {
 
   _handleResetClick = (point) => {
     this.#handleDataChange(
-      UserAction.DELETE_EVENT,
+      UserAction.DELETE_POINT,
       UpdateType.MINOR,
       point,
     );

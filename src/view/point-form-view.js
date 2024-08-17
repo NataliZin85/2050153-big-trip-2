@@ -73,16 +73,20 @@ function createPicturesTemplate(pictures) {
 }
 
 export function createDestinationTemplate(destination) {
+  console.log(destination !== undefined);
   if (destination !== undefined) {
-    const { description, pictures } = destination;
-    return (
-      `<section class="event__section  event__section--destination">
-         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${description}</p>
+    if (destination.length > 0 || destination.description.length > 0) {
+      const { description, pictures } = destination;
+      return (
+        `<section class="event__section  event__section--destination">
+          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+          <p class="event__destination-description">${description}</p>
 
-        ${createPicturesTemplate(pictures)}
-      </section>`
-    );
+          ${createPicturesTemplate(pictures)}
+        </section>`
+      );
+    }
+    return '';
   }
   return '';
 }
@@ -166,7 +170,7 @@ function createHeaderTypeDestinationTemplate(type, destination, destinationsName
         </datalist>
       </div>`
     );
-  } else if (isNewForm) {
+  } else {
     return (
       `<div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-${id}">
@@ -217,7 +221,7 @@ export default class PointFormView extends AbstractStatefulView {
   #isNewForm = null;
 
   _handleFormEditClick = null;
-  #handleFormSubmit = null;
+  _handleFormSubmit = null;
   _handleResetClick = null;
 
   #datepickerFrom = null;
@@ -230,7 +234,7 @@ export default class PointFormView extends AbstractStatefulView {
     this.#resetButton = resetButton;
     this.#isNewForm = isNewForm;
     this._handleFormEditClick = onFormEditClick;
-    this.#handleFormSubmit = onFormSubmit;
+    this._handleFormSubmit = onFormSubmit;
     this._handleResetClick = onResetClick;
 
     this._setState(PointFormView.parsePointToState({point}));
@@ -295,7 +299,7 @@ export default class PointFormView extends AbstractStatefulView {
     evt.preventDefault();
 
     const selectedDestination = this.#dataDestinations.find((pointDestination) => pointDestination.name === evt.target.value);
-    const selectedDestinationId = (selectedDestination) ? selectedDestination.id : null;
+    const selectedDestinationId = (selectedDestination !== undefined) ? selectedDestination.id : null;
     this.updateElement({
       destination: selectedDestinationId,
     });
@@ -365,7 +369,7 @@ export default class PointFormView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(PointFormView.parseStateToPoint(this._state));
+    this._handleFormSubmit(PointFormView.parseStateToPoint(this._state));
   };
 
   #formResetClickHandler = (evt) => {
