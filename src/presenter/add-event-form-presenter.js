@@ -1,6 +1,5 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
 import AddEventFormView from '../view/new-point-edit-form-view.js';
-import { nanoid } from 'nanoid';
 import { UserAction, UpdateType, FormResetButton } from '../const.js';
 
 export default class NewEventFormPresenter {
@@ -34,7 +33,7 @@ export default class NewEventFormPresenter {
       resetButton: FormResetButton.CANCEL,
       isNewForm: true,
       onFormEditClick: this._handleFormEditClick,
-      onFormSubmit: this._handlePointFormSubmit,
+      onFormSubmit: this._handleFormSubmit,
       onResetClick: this._handleResetClick,
     });
 
@@ -56,15 +55,31 @@ export default class NewEventFormPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
-  _handlePointFormSubmit = (point) => {
+  setSaving() {
+    this.#newEventFormComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#newEventFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#newEventFormComponent.shake(resetFormState);
+  }
+
+  _handleFormSubmit = (point) => {
     this.#handleDataChange(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
-      // Пока у нас нет сервера, который бы после сохранения
-      // выдывал честный id задачи, нам нужно позаботиться об этом самим
-      {id: nanoid(), ...point},
+      point,
     );
-    this.destroy();
   };
 
   _handleResetClick = () => {

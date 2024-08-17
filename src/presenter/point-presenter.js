@@ -48,8 +48,8 @@ export default class PointPresenter {
       resetButton: FormResetButton.DELETE,
       isNewForm: false,
       onFormEditClick: this._handleFormEditClick,
-      onFormSubmit: this._handlePointFormSubmit,
-      onResetClick: this._handleDeleteClick,
+      onFormSubmit: this._handleFormSubmit,
+      onResetClick: this._handleResetClick,
     });
 
     if (prevPointComponent === null || prevFormEditComponent === null) {
@@ -74,11 +74,46 @@ export default class PointPresenter {
     remove(this.#formEditComponent);
   }
 
+  setSaving() {
+    if (this.#mode === Mode.EDITING) {
+      this.#formEditComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  }
+
+  setDeleting() {
+    if (this.#mode === Mode.EDITING) {
+      this.#formEditComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  }
+
   resetView() {
     if (this.#mode !== Mode.DEFAULT) {
       this.#formEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
     }
+  }
+
+  setAborting() {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#pointComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#formEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#formEditComponent.shake(resetFormState);
   }
 
   #replacePointToForm() {
@@ -120,7 +155,7 @@ export default class PointPresenter {
     document.addEventListener('keydown', this.#escKeyDownHandler);
   };
 
-  _handlePointFormSubmit = (update) => {
+  _handleFormSubmit = (update) => {
     // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
     // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
     const isMinorUpdate =
@@ -129,7 +164,7 @@ export default class PointPresenter {
       isPointInFuture(this.#point.dateFrom) !== isPointInFuture(update.dateFrom);
 
     this.#handleDataChange(
-      UserAction.UPDATE_EVENT,
+      UserAction.UPDATE_POINT,
       isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       update
     );
@@ -140,7 +175,7 @@ export default class PointPresenter {
 
   _handleResetClick = (point) => {
     this.#handleDataChange(
-      UserAction.DELETE_EVENT,
+      UserAction.DELETE_POINT,
       UpdateType.MINOR,
       point,
     );

@@ -8,7 +8,7 @@ const pageMainElement = document.querySelector('.page-main');
 const pageMainSortElement = pageMainElement.querySelector('.trip-events');
 const newEventButton = document.querySelector('.trip-main__event-add-btn');
 
-const AUTHORIZATION = `Basic bmF0YWxpYTp6aW5vdmV2YQ==`;
+const AUTHORIZATION = 'Basic bmF0YWxpYTp6aW5vdmV2YQ==';
 const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
 
 const pointsModel = new PointsModel({
@@ -16,15 +16,16 @@ const pointsModel = new PointsModel({
 });
 const filterModel = new FilterModel();
 
-newEventButton.addEventListener('click', handleNewEventButtonClick);
-
 const pagePresenter = new PagePresenter({
   pageContainer: pageMainSortElement,
   headerContainer: headerElement,
   pointsModel,
   filterModel,
-  onNewEventDestroy: handleNewEventFormClose
+  newEventButton,
+  onNewEventDestroy: handleNewEventFormClose,
 });
+
+newEventButton.addEventListener('click', handleNewEventButtonClick);
 
 function handleNewEventFormClose() {
   newEventButton.disabled = false;

@@ -6,9 +6,15 @@ import HeaderPresenter from './header-presenter.js';
 import PointPresenter from './point-presenter.js';
 import NewEventFormPresenter from './add-event-form-presenter.js';
 import { render, remove, RenderPosition } from '../framework/render.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import { SortTypes, UpdateType, UserAction, FilterType } from '../const.js';
 import { sortByDay, sortByTime, sortByPrice } from '../utils/sort.js';
 import { filterEvents } from '../utils/filter.js';
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
 export default class PagePresenter {
   #tripListComponent = new EventListView();
@@ -23,18 +29,23 @@ export default class PagePresenter {
 
   #currentSortType = SortTypes.DEFAULT;
   #currentFilterType = FilterType.EVERYTHING;
+  #newEventButton = null;
   #isLoading = true;
-
-  // #offers = [];
-  // #destinations = [];
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   #newEventFormPresenter = null;
   #pointPresenters = new Map();
   #headerPresenter = null;
 
-  constructor({pageContainer, headerContainer, pointsModel, filterModel, onNewEventDestroy}) {
+  constructor({pageContainer, headerContainer, pointsModel, filterModel, newEventButton, onNewEventDestroy}) {
     this.#pageContainer = pageContainer;
     this.#headerContainer = headerContainer;
+
+    this.#newEventButton = newEventButton;
+
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
 
@@ -62,10 +73,18 @@ export default class PagePresenter {
     return filteredPoints.sort(sortByDay);
   }
 
-  init() {
-    // this.#offers = [...this.#pointsModel.offers];
-    // this.#destinations = [...this.#pointsModel.destinations];
+  get offers () {
+    const offers = this.#pointsModel.offers;
+    return offers;
+  }
 
+  get destinations () {
+    const destinations = this.#pointsModel.destinations;
+    return destinations;
+  }
+
+  init() {
+    this.#newEventButton.disabled = true;
     this.#renderSort();
     this.#renderTripList();
   }
@@ -73,13 +92,8 @@ export default class PagePresenter {
   createEvent() {
     this.#currentSortType = SortTypes.DEFAULT;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#newEventFormPresenter.init(this.#pointsModel.offers, this.#pointsModel.destinations);
+    this.#newEventFormPresenter.init(this.offers, this.destinations);
   }
-
-  #handleModeChange = () => {
-    this.#newEventFormPresenter.destroy();
-    this.#pointPresenters.forEach((presenter) => presenter.resetView());
-  };
 
   /**
    * #handleViewAction будет вызывать обновление модели.
@@ -87,19 +101,35 @@ export default class PagePresenter {
    * updateType - тип изменений, нужно чтобы понять, что после нужно обновить
    * update - обновленные данные
    */
-  #handleViewAction = (actionType, updateType, update) => {
-    // console.log(actionType, updateType, update);
+  #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
     switch (actionType) {
-      case UserAction.UPDATE_EVENT:
-        this.#pointsModel.updatePoint(updateType, update);
+      case UserAction.UPDATE_POINT:
+        this.#pointPresenters.get(update.id).setSaving();
+        try {
+          await this.#pointsModel.updatePoint(updateType, update);
+        } catch(err) {
+          this.#pointPresenters.get(update.id).setAborting();
+        }
         break;
-      case UserAction.ADD_EVENT:
-        this.#pointsModel.addPoint(updateType, update);
+      case UserAction.ADD_POINT:
+        this.#newEventFormPresenter.setSaving();
+        try {
+          await this.#pointsModel.addPoint(updateType, update);
+        } catch(err) {
+          this.#newEventFormPresenter.setAborting();
+        }
         break;
-      case UserAction.DELETE_EVENT:
-        this.#pointsModel.deletePoint(updateType, update);
+      case UserAction.DELETE_POINT:
+        this.#pointPresenters.get(update.id).setDeleting();
+        try {
+          await this.#pointsModel.deletePoint(updateType, update);
+        } catch(err) {
+          this.#pointPresenters.get(update.id).setAborting();
+        }
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   /**
@@ -123,8 +153,8 @@ export default class PagePresenter {
         break;
       case UpdateType.MINOR:
         this.#clearTripList();
-        // this.#clearHeader();
-        // this.#renderHeader();
+        this.#clearHeader();
+        this.#renderHeader();
         this.#renderSort();
         this.#renderTripList();
         break;
@@ -140,10 +170,16 @@ export default class PagePresenter {
         remove(this.#loadingComponent);
         this.#clearHeader();
         this.#renderHeader();
+        this.#newEventButton.disabled = false;
         this.#renderSort();
         this.#renderTripList();
         break;
     }
+  };
+
+  #handleModeChange = () => {
+    this.#newEventFormPresenter.destroy();
+    this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
 
   #handleSortTypeChange = (sortType) => {

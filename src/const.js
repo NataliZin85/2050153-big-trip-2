@@ -57,6 +57,11 @@ const FormResetButton = {
   CANCEL: 'Cancel'
 };
 
+const FormResetButtonAction = {
+  DELETE: 'Deleting...',
+  CANCEL: 'Canceling...'
+};
+
 const BLANK_POINT = {
   basePrice: 0,
   dateFrom: '',
@@ -67,4 +72,4 @@ const BLANK_POINT = {
   type: 'flight'
 };
 
-export { TYPES, POINT_COUNT, TextNoEvent, Mode, SortTypes, FilterType, UserAction, UpdateType, FormResetButton, BLANK_POINT };
+export { TYPES, POINT_COUNT, TextNoEvent, Mode, SortTypes, FilterType, UserAction, UpdateType, FormResetButton, FormResetButtonAction, BLANK_POINT };
