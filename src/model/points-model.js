@@ -6,6 +6,7 @@ export default class PointsModel extends Observable {
   #points = [];
   #dataOffers = [];
   #dataDestinations = [];
+  #isLoadFailed = false;
 
   constructor({pointsApiService}) {
     super();
@@ -14,6 +15,18 @@ export default class PointsModel extends Observable {
 
   get points() {
     return this.#points;
+  }
+
+  get failed() {
+    return this.#isLoadFailed;
+  }
+
+  get offers() {
+    return this.#dataOffers;
+  }
+
+  get destinations() {
+    return this.#dataDestinations;
   }
 
   async init() {
@@ -30,6 +43,7 @@ export default class PointsModel extends Observable {
       this.#points = [];
       this.#dataOffers = [];
       this.#dataDestinations = [];
+      this.#isLoadFailed = true;
     }
     this._notify(UpdateType.INIT);
   }
@@ -87,14 +101,6 @@ export default class PointsModel extends Observable {
     } catch(err) {
       throw new Error('Can\'t delete event point');
     }
-  }
-
-  get offers() {
-    return this.#dataOffers;
-  }
-
-  get destinations() {
-    return this.#dataDestinations;
   }
 
   #adaptToClient(point) {

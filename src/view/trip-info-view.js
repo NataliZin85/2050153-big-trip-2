@@ -22,8 +22,8 @@ function getNewDate(pointDate) {
 }
 
 function createTripInfoTemplate(points, dataOffers, dataDestinations, currentFilterType) {
-  if (points.length !== 0) {
-    const filteredEvents = filterEvents[currentFilterType](points);
+  const filteredEvents = filterEvents[currentFilterType](points);
+  if (filteredEvents.length !== 0) {
     const sortedPoints = filteredEvents.sort(sortByDay);
 
     const firstPoint = sortedPoints[0];

@@ -1,9 +1,8 @@
 import PointItemView from '../view/point-view.js';
 import FormEditView from '../view/form-edit-view.js';
 import { render, replace, remove } from '../framework/render.js';
-import { isEscapeKey } from '../utils/utils.js';
 import { isPointInPresent, isPointInPast, isPointInFuture } from '../utils/filter.js';
-import { Mode, UserAction, UpdateType, FormResetButton } from '../const.js';
+import { Mode, UserAction, UpdateType, FormResetButtonNames } from '../const.js';
 
 export default class PointPresenter {
   #eventListContainer = null;
@@ -45,11 +44,11 @@ export default class PointPresenter {
       point: this.#point,
       dataOffers: this.#dataOffers,
       dataDestinations: this.#dataDestinations,
-      resetButton: FormResetButton.DELETE,
+      resetButton: FormResetButtonNames.DELETE,
       isNewForm: false,
-      onFormEditClick: this._handleFormEditClick,
-      onFormSubmit: this._handleFormSubmit,
-      onResetClick: this._handleResetClick,
+      onFormEditClick: this.handleFormEditClick,
+      onFormSubmit: this.handleFormSubmit,
+      onResetClick: this.handleResetClick,
     });
 
     if (prevPointComponent === null || prevFormEditComponent === null) {
@@ -77,8 +76,8 @@ export default class PointPresenter {
   setSaving() {
     if (this.#mode === Mode.EDITING) {
       this.#formEditComponent.updateElement({
-        isDisabled: true,
         isSaving: true,
+        isDisabled: true,
       });
     }
   }
@@ -86,8 +85,8 @@ export default class PointPresenter {
   setDeleting() {
     if (this.#mode === Mode.EDITING) {
       this.#formEditComponent.updateElement({
-        isDisabled: true,
         isDeleting: true,
+        isDisabled: true,
       });
     }
   }
@@ -129,14 +128,6 @@ export default class PointPresenter {
     this.#mode = Mode.DEFAULT;
   }
 
-  #escKeyDownHandler = (evt) => {
-    if (isEscapeKey(evt)) {
-      evt.preventDefault();
-      this.#formEditComponent.reset(this.#point);
-      this.#replaceFormToPoint();
-    }
-  };
-
   #handleFavoriteClick = () => {
     this.#handleDataChange(
       UserAction.UPDATE_POINT,
@@ -147,15 +138,13 @@ export default class PointPresenter {
 
   #handleEditClick = () => {
     this.#replacePointToForm();
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
-  _handleFormEditClick = () => {
+  handleFormEditClick = () => {
     this.#replaceFormToPoint();
-    document.addEventListener('keydown', this.#escKeyDownHandler);
   };
 
-  _handleFormSubmit = (update) => {
+  handleFormSubmit = (update) => {
     // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
     // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
     const isMinorUpdate =
@@ -173,11 +162,19 @@ export default class PointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
-  _handleResetClick = (point) => {
+  handleResetClick = (point) => {
     this.#handleDataChange(
       UserAction.DELETE_POINT,
       UpdateType.MINOR,
       point,
     );
+  };
+
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      this.#formEditComponent.reset(this.#point);
+      this.#replaceFormToPoint();
+    }
   };
 }

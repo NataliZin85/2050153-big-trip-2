@@ -6,7 +6,7 @@ import PointsApiService from './points-api-service.js';
 const headerElement = document.querySelector('.page-header__container');
 const pageMainElement = document.querySelector('.page-main');
 const pageMainSortElement = pageMainElement.querySelector('.trip-events');
-const newEventButton = document.querySelector('.trip-main__event-add-btn');
+const newEventButtonElement = document.querySelector('.trip-main__event-add-btn');
 
 const AUTHORIZATION = 'Basic bmF0YWxpYTp6aW5vdmV2YQ==';
 const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
@@ -21,24 +21,21 @@ const pagePresenter = new PagePresenter({
   headerContainer: headerElement,
   pointsModel,
   filterModel,
-  newEventButton,
+  newEventButtonElement,
   onNewEventDestroy: handleNewEventFormClose,
 });
 
-newEventButton.addEventListener('click', handleNewEventButtonClick);
+newEventButtonElement.addEventListener('click', handleNewEventButtonClick);
 
 function handleNewEventFormClose() {
-  newEventButton.disabled = false;
+  newEventButtonElement.disabled = false;
 }
 
 function handleNewEventButtonClick() {
   pagePresenter.createEvent();
-  newEventButton.disabled = true;
+  newEventButtonElement.disabled = true;
 }
 
-newEventButton.disabled = true;
+newEventButtonElement.disabled = true;
 pagePresenter.init();
-pointsModel.init()
-  .finally(() => {
-    newEventButton.disabled = false;
-  });
+pointsModel.init();

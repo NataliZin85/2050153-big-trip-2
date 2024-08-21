@@ -71,7 +71,7 @@ const getLongDuration = (start, end) => {
  * start - начало события;
  * end - завершения события;
  */
-function getDurationInTime(start, end) {
+const getDurationInTime = (start, end) => {
   const difference = (dayjs(end).diff(dayjs(start)));
   const differenceInHours = dayjs(end).diff(dayjs(start), 'hour');
   let pointDuration;
@@ -83,13 +83,12 @@ function getDurationInTime(start, end) {
   } else if (differenceInHours >= HOURS_IN_DAY) {
     if(dayjs(end).diff(dayjs(start), 'day') > DAYS_IN_MONTH) {
       pointDuration = getLongDuration(start, end);
-      // pointDuration = dayjs(difference).format('DDD[D] HH[H] mm[M]');
     } else {
       pointDuration = dayjs(difference).format('DD[D] HH[H] mm[M]');
     }
   }
   return pointDuration;
-}
+};
 
 /**
  * getPointTypeOffer - Получение дополнительных предложений в зависимости от типа.
