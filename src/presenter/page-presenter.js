@@ -247,7 +247,7 @@ export default class PagePresenter {
       filterModel: this.#filterModel,
       pointsModel: this.#pointsModel,
     });
-    this.#headerPresenter.init(this.#pointsModel.points, this.offers, this.destinations);
+    this.#headerPresenter.init(this.points, this.offers, this.destinations);
   }
 
   #clearHeader() {

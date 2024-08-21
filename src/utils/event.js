@@ -83,7 +83,6 @@ const getDurationInTime = (start, end) => {
   } else if (differenceInHours >= HOURS_IN_DAY) {
     if(dayjs(end).diff(dayjs(start), 'day') > DAYS_IN_MONTH) {
       pointDuration = getLongDuration(start, end);
-      // pointDuration = dayjs(difference).format('DDD[D] HH[H] mm[M]');
     } else {
       pointDuration = dayjs(difference).format('DD[D] HH[H] mm[M]');
     }

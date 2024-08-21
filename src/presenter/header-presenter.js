@@ -38,16 +38,12 @@ export default class HeaderPresenter {
   destroy() {
     this.#filterPresenter.destroy();
 
-    // if (this.#tripInfoComponent.element === null) {
-    //   return;
-    // }
-
     remove(this.#tripInfoComponent);
     this.#tripInfoComponent = null;
   }
 
   #renderTripInfo() {
-    if (this.#pointsModel.points.length !== 0) {
+    if (this.#points.length !== 0) {
       this.#tripInfoComponent = new TripInfoView({
         points: this.#points,
         dataOffers: this.#dataOffers,
