@@ -2,6 +2,7 @@ import EventSortView from '../view/sort-view.js';
 import EventListView from '../view/list-view.js';
 import NoEventsView from '../view/no-events-view.js';
 import LoadingView from '../view/loading-view.js';
+import FailedView from '../view/load-failed-view.js';
 import HeaderPresenter from './header-presenter.js';
 import PointPresenter from './point-presenter.js';
 import NewEventFormPresenter from './add-event-form-presenter.js';
@@ -19,6 +20,7 @@ const TimeLimit = {
 export default class PagePresenter {
   #tripListComponent = new EventListView();
   #loadingComponent = new LoadingView();
+  #loadFailedComponent = new FailedView();
   #sortComponent = null;
   #noEventComponent = null;
 
@@ -29,7 +31,7 @@ export default class PagePresenter {
 
   #currentSortType = SortTypes.DEFAULT;
   #currentFilterType = FilterType.EVERYTHING;
-  #newEventButton = null;
+  #newEventButtonElement = null;
   #isLoading = true;
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
@@ -40,11 +42,11 @@ export default class PagePresenter {
   #pointPresenters = new Map();
   #headerPresenter = null;
 
-  constructor({pageContainer, headerContainer, pointsModel, filterModel, newEventButton, onNewEventDestroy}) {
+  constructor({pageContainer, headerContainer, pointsModel, filterModel, newEventButtonElement, onNewEventDestroy}) {
     this.#pageContainer = pageContainer;
     this.#headerContainer = headerContainer;
 
-    this.#newEventButton = newEventButton;
+    this.#newEventButtonElement = newEventButtonElement;
 
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
@@ -84,7 +86,7 @@ export default class PagePresenter {
   }
 
   init() {
-    this.#newEventButton.disabled = true;
+    this.#newEventButtonElement.disabled = true;
     this.#renderSort();
     this.#renderTripList();
   }
@@ -144,7 +146,7 @@ export default class PagePresenter {
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#pointPresenters.get(data.id).init(data, this.#pointsModel.offers, this.#pointsModel.destinations);
+        this.#pointPresenters.get(data.id).init(data, this.offers, this.destinations);
         this.#clearTripList();
         this.#clearHeader();
         this.#renderHeader();
@@ -170,7 +172,7 @@ export default class PagePresenter {
         remove(this.#loadingComponent);
         this.#clearHeader();
         this.#renderHeader();
-        this.#newEventButton.disabled = false;
+        this.#newEventButtonElement.disabled = false;
         this.#renderSort();
         this.#renderTripList();
         break;
@@ -216,13 +218,16 @@ export default class PagePresenter {
     this.#pointPresenters.set(point.id, pointPresenter);
   }
 
+  #renderPoints(points) {
+    points.forEach((point) => this.#renderPoint(point, this.offers, this.destinations));
+  }
+
   #renderNoEvents() {
     this.#noEventComponent = new NoEventsView({
-      filterType: this.#currentFilterType
+      filterType: this.#filterModel.filter
     });
     render(this.#noEventComponent, this.#pageContainer);
     remove(this.#sortComponent);
-
   }
 
   #renderLoading() {
@@ -230,8 +235,10 @@ export default class PagePresenter {
     remove(this.#sortComponent);
   }
 
-  #renderPoints(points) {
-    points.forEach((point) => this.#renderPoint(point, this.#pointsModel.offers, this.#pointsModel.destinations));
+  #renderFailedLoad() {
+    render(this.#loadFailedComponent, this.#pageContainer);
+    remove(this.#sortComponent);
+    this.#newEventButtonElement.disabled = true;
   }
 
   #renderHeader() {
@@ -240,7 +247,7 @@ export default class PagePresenter {
       filterModel: this.#filterModel,
       pointsModel: this.#pointsModel,
     });
-    this.#headerPresenter.init();
+    this.#headerPresenter.init(this.#pointsModel.points, this.offers, this.destinations);
   }
 
   #clearHeader() {
@@ -271,6 +278,11 @@ export default class PagePresenter {
     if (this.#isLoading) {
       this.#renderHeader();
       this.#renderLoading();
+      return;
+    }
+
+    if (this.#pointsModel.failed) {
+      this.#renderFailedLoad();
       return;
     }
 

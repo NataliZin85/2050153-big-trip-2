@@ -24,16 +24,16 @@ function createPointItemTemplate(point, dataOffers, dataDestinations) {
   return (
     `<li class="trip-events__item">
       <div class="event">
-        <time class="event__date" datetime=${dateFrom}>${humanizeDate(dateFrom, dateFormat.MONTH_DAY)}</time>
+        <time class="event__date" datetime=${humanizeDate(dateFrom, dateFormat.DATE_POINT)}>${humanizeDate(dateFrom, dateFormat.MONTH_DAY)}</time>
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
         <h3 class="event__title">${capitalizeWords(type)} ${name}</h3>
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${dateFrom}">${humanizeDate(dateFrom, dateFormat.HOURS)}</time>
+            <time class="event__start-time" datetime="${humanizeDate(dateFrom, dateFormat.DATE_POINT)}">${humanizeDate(dateFrom, dateFormat.HOURS)}</time>
             &mdash;
-            <time class="event__end-time" datetime="${dateTo}">${humanizeDate(dateTo, dateFormat.HOURS)}</time>
+            <time class="event__end-time" datetime="${humanizeDate(dateTo, dateFormat.DATE_POINT)}">${humanizeDate(dateTo, dateFormat.HOURS)}</time>
           </p>
           <p class="event__duration">${getDurationInTime(dateFrom, dateTo)}M</p>
         </div>

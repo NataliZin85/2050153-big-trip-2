@@ -10,8 +10,6 @@ const TYPES = [
   'restaurant'
 ];
 
-const POINT_COUNT = 3;
-
 const FilterType = {
   EVERYTHING: 'everything',
   PAST: 'past',
@@ -52,12 +50,12 @@ const UpdateType = {
   INIT: 'INIT',
 };
 
-const FormResetButton = {
+const FormResetButtonNames = {
   DELETE: 'Delete',
   CANCEL: 'Cancel'
 };
 
-const FormResetButtonAction = {
+const FormResetButtonActions = {
   DELETE: 'Deleting...',
   CANCEL: 'Canceling...'
 };
@@ -72,4 +70,4 @@ const BLANK_POINT = {
   type: 'flight'
 };
 
-export { TYPES, POINT_COUNT, TextNoEvent, Mode, SortTypes, FilterType, UserAction, UpdateType, FormResetButton, FormResetButtonAction, BLANK_POINT };
+export { TYPES, TextNoEvent, Mode, SortTypes, FilterType, UserAction, UpdateType, FormResetButtonNames, FormResetButtonActions, BLANK_POINT };

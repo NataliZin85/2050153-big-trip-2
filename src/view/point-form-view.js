@@ -1,12 +1,12 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { TYPES, FormResetButtonAction, BLANK_POINT } from '../const.js';
+import { TYPES, FormResetButtonActions, BLANK_POINT } from '../const.js';
 import { humanizeDate, capitalizeWords, dateFormat, getPointTypeOffer, getDestinationById, getDestinationNames } from '../utils/event.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import dayjs from 'dayjs';
 import he from 'he';
 
-export function createDestinationNameTemplate(name) {
+function createDestinationNameTemplate(name) {
   return (`<option value=${name}></option>`);
 }
 
@@ -35,11 +35,11 @@ function createOfferTemplate(offer, offers) {
   );
 }
 
-export function createOfferContainerTemplate(dataOffers, point) {
+function createOfferContainerTemplate(dataOffers, point) {
   const { offers } = point;
   const pointOffers = getPointTypeOffer(dataOffers, point);
 
-  if (pointOffers.length !== 0) {
+  if (pointOffers.offers.length !== 0) {
     return (
       `<section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -72,7 +72,7 @@ function createPicturesTemplate(pictures) {
   return '';
 }
 
-export function createDestinationTemplate(destination) {
+function createDestinationTemplate(destination) {
   if (destination !== undefined) {
     if (destination.length > 0 || destination.description.length > 0) {
       const { description, pictures } = destination;
@@ -184,11 +184,11 @@ function createHeaderTypeDestinationTemplate(type, destination, destinationsName
   }
 }
 
-export function createPointFormTemplate({dataOffers, dataDestinations, resetButton, isNewForm, state}) {
+function createPointFormTemplate({dataOffers, dataDestinations, resetButton, isNewForm, state}) {
   const { id, type, dateFrom, dateTo, basePrice, isDisabled, isSaving, isDeleting, } = state;
   const destination = getDestinationById(dataDestinations, state);
   const destinationsNames = getDestinationNames(dataDestinations);
-  const isDeleteButton = (resetButton === 'Delete') ? FormResetButtonAction.DELETE : FormResetButtonAction.CANCEL;
+  const isDeleteButton = (resetButton === 'Delete') ? FormResetButtonActions.DELETE : FormResetButtonActions.CANCEL;
 
   return (
     `<li class="trip-events__item">
@@ -271,8 +271,10 @@ export default class PointFormView extends AbstractStatefulView {
       .addEventListener('change', this.#typeChangeHandler);
     this.element.querySelector('.event__input--destination')
       .addEventListener('change', this.#destinationChangeHandler);
-    this.element.querySelector('.event__available-offers')
-      .addEventListener('change', this.#offersChangeHandler);
+    this.element.querySelectorAll('.event__offer-checkbox')
+      .forEach((checkbox)=> {
+        checkbox.addEventListener('change', this.#offersChangeHandler);
+      });
     this.element.querySelector('.event__input--price')
       .addEventListener('change', this.#priceChangeHandler);
     this.element.querySelector('form')

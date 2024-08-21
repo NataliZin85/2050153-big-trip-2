@@ -1,6 +1,6 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
 import AddEventFormView from '../view/new-point-edit-form-view.js';
-import { UserAction, UpdateType, FormResetButton } from '../const.js';
+import { UserAction, UpdateType, FormResetButtonNames } from '../const.js';
 
 export default class NewEventFormPresenter {
   #newEventFormComponent = null;
@@ -30,11 +30,11 @@ export default class NewEventFormPresenter {
     this.#newEventFormComponent = new AddEventFormView({
       dataOffers: this.#dataOffers,
       dataDestinations: this.#dataDestinations,
-      resetButton: FormResetButton.CANCEL,
+      resetButton: FormResetButtonNames.CANCEL,
       isNewForm: true,
-      onFormEditClick: this._handleFormEditClick,
-      onFormSubmit: this._handleFormSubmit,
-      onResetClick: this._handleResetClick,
+      onFormEditClick: this.handleFormEditClick,
+      onFormSubmit: this.handleFormSubmit,
+      onResetClick: this.handleResetClick,
     });
 
     render(this.#newEventFormComponent, this.#eventListContainer, RenderPosition.AFTERBEGIN);
@@ -57,8 +57,8 @@ export default class NewEventFormPresenter {
 
   setSaving() {
     this.#newEventFormComponent.updateElement({
-      isDisabled: true,
       isSaving: true,
+      isDisabled: true,
     });
   }
 
@@ -74,7 +74,7 @@ export default class NewEventFormPresenter {
     this.#newEventFormComponent.shake(resetFormState);
   }
 
-  _handleFormSubmit = (point) => {
+  handleFormSubmit = (point) => {
     this.#handleDataChange(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
@@ -82,11 +82,11 @@ export default class NewEventFormPresenter {
     );
   };
 
-  _handleResetClick = () => {
+  handleResetClick = () => {
     this.destroy();
   };
 
-  _handleFormEditClick = () => {
+  handleFormEditClick = () => {
     this.destroy();
   };
 

@@ -71,7 +71,7 @@ const getLongDuration = (start, end) => {
  * start - начало события;
  * end - завершения события;
  */
-function getDurationInTime(start, end) {
+const getDurationInTime = (start, end) => {
   const difference = (dayjs(end).diff(dayjs(start)));
   const differenceInHours = dayjs(end).diff(dayjs(start), 'hour');
   let pointDuration;
@@ -89,7 +89,7 @@ function getDurationInTime(start, end) {
     }
   }
   return pointDuration;
-}
+};
 
 /**
  * getPointTypeOffer - Получение дополнительных предложений в зависимости от типа.
