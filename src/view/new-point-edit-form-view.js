@@ -6,6 +6,4 @@ export default class NewEventFormView extends PointFormView {
 
     this._setState(NewEventFormView.parsePointToState({point}));
   }
-
-  reset = (point) => this.updateElement(NewEventFormView.parsePointToState(point));
 }

@@ -14,7 +14,6 @@ function createFilterTemplate(filter, currentFilterType, points) {
   );
 }
 
-// ${Object.values(FilterType).map((filter) => createFilterTemplate(filter, currentFilterType)).join('')}
 function createEventFiltersTemplate(filters, currentFilterType, points) {
   return (
     `<form class="trip-filters" action="#" method="get">
