@@ -8,6 +8,7 @@ export default class FormEditView extends PointFormView {
   }
 
   reset (point) {
+    this._state = point;
     this.updateElement(FormEditView.parsePointToState(point));
   }
 }
